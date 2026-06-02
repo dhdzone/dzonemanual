@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디지털 체험존 기기 매뉴얼</title>
+    <!-- Tailwind CSS (스타일링용) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons (아이콘용) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        /* 기본 변수 설정 */
+        :root {
+            --font-scale: 1; /* 폰트 확대/축소 배율 (기본 1) */
+        }
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            /* 폰트 스케일 변수 적용 */
+            font-size: calc(1rem * var(--font-scale));
+        }
+        
+        /* 스크롤바 디자인 (어르신들이 보기 편하게 약간 두껍게) */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        .content-box ul {
+            list-style-type: disc;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .content-box li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* 규격화된 제목 스타일 (rem 단위 사용, var(--font-scale)의 영향을 받음) */
+        .content-box h2 { /* 대제목 (기기명) */
+            font-size: calc(1.5rem * var(--font-scale)); 
+            font-weight: bold;
+            color: #1e3a8a;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+        .content-box h3 { /* 중제목 (섹션명) */
+            font-size: calc(1.25rem * var(--font-scale));
+            font-weight: 600;
+            color: #334155;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .content-box h4 { /* 소제목 (항목명) */
+            font-size: calc(1.125rem * var(--font-scale));
+            font-weight: 600;
+            color: #475569;
+            margin-top: 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+        .content-box p, .content-box li, .content-box strong, .content-box span { /* 본문 설명 */
+            font-size: calc(1rem * var(--font-scale));
+            color: #475569;
+        }
+        
+        /* 특정 작은 텍스트 클래스 무력화 및 스케일 적용 */
+        .content-box .text-sm, 
+        .content-box .text-xs,
+        .content-box .text-base,
+        .content-box .text-lg,
+        .content-box .text-xl {
+            font-size: inherit; /* 부모(혹은 전역) 폰트 크기 상속받아 통일 */
+        }
+        
+        .highlight {
+            background-color: #fef08a; /* 노란색 형광펜 효과 */
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+
+        /* 활성화된 검색어 하이라이트 스타일 */
+        .search-highlight {
+            transition: all 0.3s ease;
+        }
+        .search-highlight.active {
+            background-color: #f97316 !important; /* 오렌지색 */
+            color: white !important;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.4) !important;
+            border-radius: 4px;
+        }
+
+        /* 사이드바 숨김을 위한 클래스 */
+        .sidebar-hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden transition-all duration-300" id="appBody">
+
+    <!-- 모바일 헤더 & 검색 (화면 작을 때 위쪽에 표시) -->
+    <header class="md:hidden bg-blue-700 text-white p-4 shadow-md z-10 flex flex-col gap-3 shrink-0">
+        <div class="flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center">
+                <i data-lucide="book-open" class="mr-2"></i> 디지털 체험존
+            </h1>
+            <div class="flex gap-2">
+                <button onclick="toggleSidebar()" class="p-2 bg-blue-600 rounded hover:bg-blue-500 flex items-center text-sm font-semibold" aria-label="목차 토글" id="mobileSidebarToggleBtn">
+                    목차숨김
+                </button>
+                <!-- 모바일 폰트 조절 버튼 -->
+                <button onclick="changeFontSize(-0.1)" class="p-2 bg-blue-600 rounded hover:bg-blue-500" aria-label="글씨 작게">
+                    <i data-lucide="minus" class="w-5 h-5"></i>
+                </button>
+                <button onclick="changeFontSize(0.1)" class="p-2 bg-blue-600 rounded hover:bg-blue-500" aria-label="글씨 크게">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        <div class="relative">
+            <input type="text" id="mobileSearch" placeholder="기기명이나 내용을 검색하세요..." 
+                class="w-full p-3 pl-10 rounded-lg text-slate-800 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <i data-lucide="search" class="absolute left-3 top-3.5 text-slate-400"></i>
+        </div>
+    </header>
+
+    <!-- 사이드바 (메뉴) -->
+    <aside id="sidebar" class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col h-[30vh] md:h-full z-10 shrink-0 transition-all duration-300 relative">
+        <!-- 데스크탑 헤더 & 검색 -->
+        <div class="hidden md:block p-5 bg-blue-700 text-white">
+            <div class="flex justify-between items-start mb-4">
+                <h1 class="text-2xl font-bold flex items-center">
+                    <i data-lucide="book-open" class="mr-2"></i> 디지털 체험존 매뉴얼
+                </h1>
+            </div>
+            <div class="relative">
+                <input type="text" id="desktopSearch" placeholder="검색어 입력..." 
+                    class="w-full p-3 pl-10 rounded-lg text-slate-800 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <i data-lucide="search" class="absolute left-3 top-3.5 text-slate-400"></i>
+            </div>
+        </div>
+        
+        <!-- 메뉴 리스트 -->
+        <div class="flex-1 overflow-y-auto p-2" id="menuList">
+            <!-- 자바스크립트로 메뉴가 생성됩니다 -->
+        </div>
+    </aside>
+
+    <!-- 메인 컨텐츠 영역 -->
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative flex flex-col transition-all duration-300">
+        
+        <!-- 데스크탑 화면제어 툴바 (스크롤 시 상단 고정) -->
+        <div class="sticky top-0 z-20 bg-slate-50/90 backdrop-blur border-b border-slate-200 px-4 py-3 md:px-8 hidden md:flex justify-end items-center gap-3 w-full">
+            
+            <!-- 목차 숨김/표시 텍스트 버튼 -->
+            <button onclick="toggleSidebar()" id="sidebarToggleBtnDesktop" class="bg-white text-slate-600 px-4 py-2 rounded shadow-sm border border-slate-200 hover:bg-slate-100 flex items-center font-bold text-sm transition-colors" title="목차 닫기/열기">
+                <i data-lucide="panel-left-close" class="w-4 h-4 mr-1.5" id="sidebarIcon"></i>
+                <span id="sidebarText">목차숨김</span>
+            </button>
+
+            <!-- 데스크탑 폰트 조절 버튼 -->
+            <div class="flex bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
+                <button onclick="changeFontSize(-0.1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 border-r border-slate-200 transition-colors" title="글씨 작게">
+                    <i data-lucide="minus" class="w-4 h-4"></i>
+                </button>
+                <div class="px-3 py-2 text-slate-600 font-semibold flex items-center justify-center bg-slate-50 min-w-[3.5rem] text-sm" id="fontScaleDisplay">
+                    100%
+                </div>
+                <button onclick="changeFontSize(0.1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 border-l border-slate-200 transition-colors" title="글씨 크게">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+            <!-- 전체화면/창화면 텍스트 버튼 -->
+            <button onclick="toggleFullScreen()" id="fullscreenToggleBtn" class="bg-white text-slate-600 px-4 py-2 rounded shadow-sm border border-slate-200 hover:bg-slate-100 flex items-center font-bold text-sm transition-colors" title="전체화면 전환">
+                <i data-lucide="maximize" class="w-4 h-4 mr-1.5" id="fullscreenIcon"></i>
+                <span id="fullscreenText">전체화면</span>
+            </button>
+        </div>
+
+        <div class="p-4 md:p-8 flex-1 w-full">
+            <div id="contentArea" class="max-w-4xl w-full mx-auto bg-white rounded-2xl shadow-sm p-6 md:p-10 border border-slate-200 content-box leading-relaxed relative">
+                <!-- 초기 화면 -->
+            <div class="text-center py-20 text-slate-500">
+                <i data-lucide="pointer" class="w-16 h-16 mx-auto mb-4 text-slate-300"></i>
+                <p class="text-2xl font-bold mb-2">왼쪽 메뉴에서 매뉴얼을 선택해주세요.</p>
+                <p class="text-lg">또는 위쪽 검색창에서 기기 이름을 검색해 보세요.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 검색 네비게이터 (플로팅 바) -->
+    <div id="searchNavigator" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm shadow-xl border border-blue-200 rounded-full flex items-center px-4 py-2 gap-3 z-50 hidden transition-all duration-300">
+        <button onclick="prevHighlight()" class="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400" title="이전 결과">
+            <i data-lucide="chevron-up" class="w-5 h-5"></i>
+        </button>
+        <span id="searchMatchCount" class="text-slate-700 font-semibold text-sm whitespace-nowrap min-w-[3rem] text-center">0 / 0</span>
+        <button onclick="nextHighlight()" class="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400" title="다음 결과">
+            <i data-lucide="chevron-down" class="w-5 h-5"></i>
+        </button>
+        <div class="w-px h-5 bg-slate-300 mx-1"></div>
+        <button onclick="clearSearch()" class="p-2 text-rose-500 hover:bg-rose-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-rose-400" title="검색 취소">
+            <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+    </div>
+
+    <script>
+        // 매뉴얼 데이터
+        const manualData = [
+            {
+                id: 'setup',
+                title: '기기 세팅 방법',
+                icon: 'settings',
+                content: `
+                    <h2>디지털 체험존 기기 세팅 방법</h2>
+                    <p class="mb-6 text-slate-600">체험존 운영 시작 전, 각 기기별 올바른 전원 켜기 및 기본 세팅 절차입니다.</p>
+                    <div class="space-y-6">
+
+                    <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                    <strong class="text-slate-800 block mb-2">▶ 도우미 가이드 영상 시청하기:</strong>
+                    <div class="mt-3 rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                     <iframe 
+                class="w-full aspect-video" 
+                src="https://www.youtube.com/embed/lApmqWrD2gM" 
+                title="도우미 가이드 영상" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+        </div>
+        </div>
+                        <!-- 정보검색대 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="monitor" class="w-5 h-5 mr-2 text-blue-600"></i>가. 정보검색대</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>정보검색대의 하단 문을 개폐하여 PC의 전원(동그라미 버튼)을 누릅니다.</li>
+                                <li>모니터의 전원이 켜져있는지 확인합니다.</li>
+                                <li>바탕화면이 정상적으로 보이는지 확인합니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 갤럭시 탭 A7 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="tablet" class="w-5 h-5 mr-2 text-blue-600"></i>나. 갤럭시 탭 A7</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>복지관 2층 종합사무실에서 충전이 완료된 갤럭시 탭 A7 2대를 가져옵니다.</li>
+                                <li>기기 오른쪽 옆면의 제일 위쪽에 있는 전원 버튼을 길게 눌러 전원을 켭니다.</li>
+                                <li>디지털 체험존 중앙 테이블에 화면이 잘 보이게 거치합니다.</li>
+                                <li>바탕화면이 정상적으로 보이는지 확인합니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 키오에듀 선반형 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="layout-template" class="w-5 h-5 mr-2 text-blue-600"></i>다. 키오에듀(선반형)</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>벽면에 있는 멀티탭을 켜서 전원을 켭니다.</li>
+                                <li>화면이 켜지면 바탕화면에 있는 '키오에듀' 앱을 실행합니다.</li>
+                            </ul>
+                            <div class="bg-red-50 mt-3 p-3 rounded text-red-700 border border-red-100">
+                                <p class="font-bold">※ 주의사항</p>
+                                <ul class="list-disc ml-5 mt-1">
+                                    <li>화면이 켜지지 않는다면 뒤쪽 문을 개폐하여 가장 왼쪽 검정색 선을 빼고 2초 뒤 다시 연결합니다.</li>
+                                    <li>영수증 기기는 블루투스를 통해 연결됩니다. (자세한 내용은 키오에듀 매뉴얼 참고)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 키오에듀 스탠드형 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="smartphone" class="w-5 h-5 mr-2 text-blue-600"></i>라. 키오에듀(스탠드형)</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>전원 코드를 콘센트에 연결하여 전원을 켭니다.</li>
+                                <li>화면이 켜지면 바탕화면에 있는 '키오에듀' 앱을 실행합니다.</li>
+                            </ul>
+                            <div class="bg-red-50 mt-3 p-3 rounded text-red-700 border border-red-100">
+                                <p class="font-bold">※ 주의사항</p>
+                                <ul class="list-disc ml-5 mt-1">
+                                    <li>영수증 기기는 블루투스를 통해 연결됩니다. (자세한 내용은 키오에듀 매뉴얼 참고)</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 휴대폰 무인 충전함 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="battery-charging" class="w-5 h-5 mr-2 text-blue-600"></i>마. 휴대폰 무인 충전함</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>충전 중인 기기가 있는지 확인합니다. 분실물일 경우 담당자나 디지털 매니저에게 전달합니다.</li>
+                                <li>충전 중인 휴대폰이 없는 경우, 문이 정상적으로 열리는지 확인합니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 두리 로봇 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="bot" class="w-5 h-5 mr-2 text-blue-600"></i>바. 두리 로봇</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>복지관 2층 종합사무실에서 충전이 완료된 두리 로봇을 가져옵니다.</li>
+                                <li>로봇 등 쪽에 전원 스위치를 'ON'으로 바꿔 전원을 켭니다.</li>
+                                <li>디지털 체험존 중앙 테이블에 비치합니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 마이봄 미니 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="cpu" class="w-5 h-5 mr-2 text-blue-600"></i>사. 마이봄 미니</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>복지관 2층 종합사무실에서 충전이 완료된 마이봄 미니 로봇을 가져옵니다.</li>
+                                <li>로봇 몸통의 동그란 버튼을 4초간 눌러 전원을 켭니다.</li>
+                                <li>디지털 체험존 중앙 테이블에 비치합니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 보미 로봇 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="puzzle" class="w-5 h-5 mr-2 text-blue-600"></i>아. 보미 로봇</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>로봇 좌측면 하단에 동그란 버튼을 눌러 전원을 켭니다.</li>
+                                <li>전원이 켜지면, 블록(10개)의 하단에 전원 스위치를 'ON'으로 바꿔 전원을 켭니다.</li>
+                                <li>블럭화면에 불이 들어오면, 화면 아래에 'CONNECTION'으로 되어 있는지 확인합니다.</li>
+                                <li>게임을 실행하여 블록이 정상적으로 연결되었는지 확인합니다.</li>
+                            </ul>
+                                <div class="bg-red-50 mt-3 p-3 rounded text-red-700 border border-red-100">
+                                <p class="font-bold">※ 주의사항</p>
+                                <ul class="list-disc ml-5 mt-1">
+                                <li>블럭 화면에 'DISCONNECTION'이 나올 시, 블럭 전원과 보미 로봇 전원을 전부 종료 후 5분 뒤 보미 로봇-블럭 순서로 재시작 합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 씽큐 테이블 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="layout-grid" class="w-5 h-5 mr-2 text-blue-600"></i>자. 씽큐 테이블</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>테이블 하단 모서리에 있는 전원 스위치를 'ㅇ'에서 '|'로 눌러 전원을 켭니다.</li>
+                                <li>화면이 켜지고 바탕화면이 보이면 '시니어 콘텐츠'를 실행합니다.</li>
+                            </ul>
+                                <div class="bg-red-50 mt-3 p-3 rounded text-red-700 border border-red-100">
+                                <p class="font-bold">※ 주의사항</p>
+                                <ul class="list-disc ml-5 mt-1">
+                                <li>화면이 반대로 보일 시, 홈 화면에서 테이블 아래 중앙에 있는 동그란 초록색 버튼을 누르면 화면이 180도 회전 합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 해피 태블릿 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="tablet-smartphone" class="w-5 h-5 mr-2 text-blue-600"></i>차. 해피 태블릿</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>복지관 2층 종합사무실에서 충전이 완료된 갤럭시 탭 A7 1대를 가져옵니다.</li>
+                                <li>TV의 오른쪽 밑에 전원버튼을 눌러 화면을 켭니다.</li>
+                                <li>TV 하단에 태블릿을 거치한 후 충전선을 연결합니다.</li>
+                                <li>태블릿의 상단 화면을 아래로 쓸어 내리며 'smart view'를 터치합니다.</li>
+                                <li>TV의 이름이 화면에 나오면 터치해서 연결합니다.</li>
+                                <li>TV 화면에서 연결된 태블릿의 화면을 '전체화면'을 눌러 확대합니다.</li>
+                                <li>바탕화면에 있는 '해피 태블릿' 어플을 실행합니다.</li>
+                                <li>'인지 게임'을 터치하여 게임 선택 화면을 불러옵니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 스마트 건강 체조 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="music-4" class="w-5 h-5 mr-2 text-blue-600"></i>카. 스마트 건강 체조</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>벽면에 있는 멀티탭을 켜서 전원을 켭니다.</li>
+                                <li>화면이 정상적으로 출력되는지 확인합니다. <br>
+                                <span class="text-slate-500">※ 정상적으로 출력되지 않는 경우, TV 안쪽 박스 상단에 있는 가장 왼쪽의 동그란 버튼을 눌러 화면을 켭니다.</span></li>
+                                <li>바탕화면이 실행되면 '건강 체조' 어플을 실행합니다.</li>
+                                <li>'카메라 연결' 버튼을 눌러 카메라를 연결합니다.</li>
+                                <li>'폴더 열기' 버튼을 눌러 영상이 있는 폴더를 연결합니다.</li>
+                                <li>'전체 화면' 버튼을 눌러 화면을 확대합니다.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'cleanup',
+                title: '기기 정리 방법',
+                icon: 'package-check',
+                content: `
+                    <h2>디지털 체험존 기기 정리 방법</h2>
+                    <p class="mb-6 text-slate-600">체험존 운영 종료 후, 각 기기별 올바른 전원 끄기 및 정리 절차입니다. 세팅의 역순으로 진행합니다.</p>
+                    <div class="space-y-6">
+                    <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                    <strong class="text-slate-800 block mb-2">▶ 도우미 가이드 영상 시청하기:</strong>
+                    <div class="mt-3 rounded-xl overflow-hidden shadow-sm border border-slate-200">
+                     <iframe 
+                class="w-full aspect-video" 
+                src="https://www.youtube.com/embed/여기에_유튜브_영상_ID를_넣으세요" 
+                title="도우미 가이드 영상" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                allowfullscreen>
+            </iframe>
+        </div>
+        </div>
+                        <!-- 정보검색대 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="monitor" class="w-5 h-5 mr-2 text-rose-600"></i>가. 정보검색대</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>바탕화면 왼쪽 아래의 [시작] ➔ [전원] ➔ [시스템 종료]를 순서대로 마우스로 눌러서 안전하게 PC를 종료합니다.</li>
+                                <li>모니터의 전원도 함께 꺼줍니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 갤럭시 탭 A7 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="tablet" class="w-5 h-5 mr-2 text-rose-600"></i>나. 갤럭시 탭 A7</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>사용 중인 모든 창과 앱을 닫습니다.</li>
+                                <li>기기 오른쪽 옆면의 제일 위쪽에 있는 전원 버튼을 길게 눌러 전원을 끕니다.</li>
+                                <li>복지관 2층 종합사무실로 가져가 충전 케이블에 연결해 둡니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 키오에듀 선반형 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="layout-template" class="w-5 h-5 mr-2 text-rose-600"></i>다. 키오에듀(선반형)</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>바탕화면 하단 메뉴바의 [종료 메뉴]를 이용하여 시스템을 안전하게 종료합니다.</li>
+                                <li>벽면에 있는 멀티탭 전원을 끕니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 키오에듀 스탠드형 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="smartphone" class="w-5 h-5 mr-2 text-rose-600"></i>라. 키오에듀(스탠드형)</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>바탕화면 하단 메뉴바의 [종료 메뉴]를 이용하여 시스템을 안전하게 종료합니다.</li>
+                                <li>콘센트에서 전원 코드를 분리합니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 휴대폰 무인 충전함 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="battery-charging" class="w-5 h-5 mr-2 text-rose-600"></i>마. 휴대폰 무인 충전함</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>충전함 내부에 기기가 남아 있는지 확인합니다. 방치된 기기가 있을 경우 담당자에게 전달합니다.</li>
+                                <li>모든 충전함 문을 닫아줍니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 두리 로봇 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="bot" class="w-5 h-5 mr-2 text-rose-600"></i>바. 두리 로봇</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>로봇 등 쪽에 있는 전원 스위치를 'OFF'로 바꿔 전원을 끕니다.</li>
+                                <li>복지관 2층 종합사무실로 가져가 충전 케이블에 연결해 둡니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 마이봄 미니 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="cpu" class="w-5 h-5 mr-2 text-rose-600"></i>사. 마이봄 미니</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>로봇 몸통의 동그란 버튼을 길게 눌러 전원을 끕니다.</li>
+                                <li>복지관 2층 종합사무실로 가져가 충전 케이블에 연결해 둡니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 보미 로봇 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="puzzle" class="w-5 h-5 mr-2 text-rose-600"></i>아. 보미 로봇</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>모든 블록(10개) 하단의 전원 스위치를 'OFF'로 바꿔 전원을 끕니다.</li>
+                                <li>로봇 좌측면 하단에 동그란 버튼을 눌러 전원을 끕니다.</li>
+                                <li>블록과 로봇을 제자리에 정리합니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 씽큐 테이블 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="layout-grid" class="w-5 h-5 mr-2 text-rose-600"></i>자. 씽큐 테이블</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>앱 실행 화면을 모두 닫고 바탕화면으로 나옵니다.</li>
+                                <li>테이블 하단 모서리에 있는 전원 스위치를 '|'에서 'ㅇ'로 눌러 전원을 끕니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 해피 태블릿 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="tablet-smartphone" class="w-5 h-5 mr-2 text-rose-600"></i>차. 해피 태블릿</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>'해피 태블릿' 어플을 종료합니다.</li>
+                                <li>태블릿의 상단 화면을 아래로 쓸어 내리며 'smart view'를 터치하여 연결을 해제합니다.</li>
+                                <li>태블릿의 전원 버튼을 길게 눌러 전원을 끕니다.</li>
+                                <li>TV의 오른쪽 밑에 전원버튼을 눌러 화면을 끕니다.</li>
+                                <li>충전선은 계속 연결해 둡니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- 스마트 건강 체조 -->
+                        <div class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                            <h3 class="font-bold text-slate-800 mb-3 flex items-center"><i data-lucide="music-4" class="w-5 h-5 mr-2 text-rose-600"></i>카. 스마트 건강 체조</h3>
+                            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                                <li>'건강 체조' 어플을 종료합니다.</li>
+                                <li>TV의 전원 버튼을 눌러 화면을 끕니다.</li>
+                                <li>벽면에 있는 멀티탭을 꺼서 전원을 차단합니다.</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'log',
+                title: '이용자 명부 작성 안내',
+                icon: 'edit-3',
+                content: `
+                    <h2>디지털 이용자 명부 작성 안내</h2>
+                    
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-3 text-blue-900">💡 [스마트기기 이용자 명부 작성 매뉴얼]</h3>
+                        
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">1. 방문자 명부 등록 (메인 화면)</h4>
+                            <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                <li><strong class="text-blue-800">체험 내용 선택:</strong> 방문자가 이용한 서비스나 체험 항목을 버튼으로 선택합니다. (여러 개 중복 선택 가능)</li>
+                                <li><strong class="text-blue-800">휴대폰 번호 뒷자리 입력 (선택 사항):</strong> 우측의 <strong>'숫자 키패드'</strong>를 이용하여 방문자의 휴대폰 번호 뒷자리 4자리를 입력합니다.<br>
+                                <span class="text-slate-500">참고사항: 번호 입력은 동명이인 구분을 위한 최소한의 식별 목적으로 사용되며, 번호를 입력하면 개인정보 수집·이용에 동의한 것으로 자동 기록됩니다.</span></li>
+                                <li><strong class="text-blue-800">등록하기:</strong> 선택 및 입력을 마치고 화면 하단의 '등록' (또는 완료) 버튼을 누르면 명부 작성이 완료됩니다.</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">2. 등록된 명부 기록 확인 및 관리</h4>
+                            <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                <li><strong class="text-blue-800">목록 조회:</strong> 방문 일자/시간, 번호, 체험 내용이 목록 형태로 표시됩니다. 방문자의 개인정보 보호를 위해 기본적으로 휴대폰 뒷자리는 ****로 가려져(마스킹) 표시됩니다.</li>
+                                <li><strong class="text-blue-800">수정 및 삭제:</strong> 목록 우측의 '관리' 항목에서 연필 아이콘(수정)을 눌러 내용을 변경하거나, 휴지통 아이콘(삭제)을 눌러 잘못된 기록을 지울 수 있습니다.</li>
+                                <li><strong class="text-blue-800">기간 검색:</strong> 상단의 날짜 선택기(달력)를 통해 특정 기간 동안의 방문 기록만 필터링하여 조회할 수 있습니다.</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">3. 관리자 전용 기능</h4>
+                            <p class="text-slate-600 mb-3">목록 우측 상단의 버튼들을 통해 명부 데이터를 추출하거나 원본 데이터를 열람할 수 있습니다. (모든 관리자 기능은 클릭 시 비밀번호 입력창이 뜹니다.)</p>
+                            <ul class="space-y-3 text-slate-700">
+                                <li><strong class="text-indigo-700">👁️ 연락처 확인:</strong> 버튼을 누르고 비밀번호를 입력하면 마스킹된 휴대폰 번호 뒷자리(****)가 10초 동안 원본 숫자로 표시되며, 시간이 지나면 다시 자동으로 가려집니다.</li>
+                                <li><strong class="text-emerald-700">📊 Excel 저장:</strong> 버튼을 누르고 비밀번호를 입력하면 현재 조회 중인 명부 기록을 엑셀(.xlsx) 파일 형태로 PC에 다운로드합니다.</li>
+                                <li><strong class="text-rose-700">🖨️ PDF / 인쇄:</strong> 버튼을 누르고 비밀번호를 입력하면 명부를 깔끔한 표 형태로 바로 프린트하거나 PDF 파일로 인쇄 및 저장할 수 있습니다. (인쇄 화면에서는 비밀번호 입력창 등 불필요한 UI가 자동으로 숨겨집니다.)</li>
+                            </ul>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'pc',
+                title: '정보검색대 사용과 에티켓',
+                icon: 'monitor',
+                content: `
+                    <h2>정보검색대 사용 방법 및 에티켓</h2>
+                    <p class="mb-4 text-slate-600">체험존에 비치된 공용 데스크탑(컴퓨터)을 안전하고 올바르게 사용하는 방법입니다.</p>
+
+                    <h3 class="font-bold mb-3">💻 기본 컴퓨터 조작법</h3>
+                    <ul class="space-y-2 text-slate-700">
+                        <li><strong>전원 켜기:</strong> 본체의 전원 버튼을 한 번만 누르고, 윈도우 바탕화면이 켜질 때까지 여유를 가지고 기다려주세요.</li>
+                        <li><strong>마우스 사용법:</strong> 
+                            <ul class="mt-1 mb-2 ml-4 list-circle text-slate-600">
+                                <li>왼쪽 버튼: 아이콘이나 메뉴를 '선택(1번 클릭)' 하거나 '실행(2번 연속 클릭)' 할 때 사용합니다.</li>
+                                <li>오른쪽 버튼: 숨겨진 '추가 메뉴 보기'를 할 때 사용합니다.</li>
+                                <li>가운데 휠(바퀴): 인터넷 화면 등을 '위아래로 오르내릴 때' 굴려서 사용합니다.</li>
+                            </ul>
+                        </li>
+                        <li><strong>올바른 전원 끄기:</strong> 사용 후에는 절대 본체의 전원 버튼을 강제로 누르지 마세요. 화면 왼쪽 아래의 <strong>[시작(창문 모양 아이콘)] ➔ [전원 아이콘] ➔ [시스템 종료]</strong>를 순서대로 마우스로 눌러서 안전하게 종료해야 기기 고장을 막을 수 있습니다.</li>
+                    </ul>
+
+                    <div class="bg-yellow-50 p-5 rounded-lg border border-yellow-200 mt-6">
+                        <h3 class="font-bold mb-3">🤝 모두를 위한 공용 PC 에티켓</h3>
+                        <ul class="space-y-2 text-slate-700">
+                            <li><strong>개인정보 보호 철저:</strong> 카카오톡, 네이버, 유튜브 등에 <span class="highlight">로그인 하셨다면 자리를 뜨기 전에 반드시 로그아웃</span>을 해주세요. 타인이 내 정보를 볼 수 있습니다.</li>
+                            <li><strong>기기 주변 청결 유지:</strong> 컴퓨터 주변에서는 물, 커피, 음식물 섭취를 금합니다. 자판기나 본체에 액체를 쏟으면 감전 및 심각한 고장의 원인이 됩니다.</li>
+                            <li><strong>임의 프로그램 설치 금지:</strong> 출처를 알 수 없는 파일이나 이상한 프로그램은 바이러스 감염의 위험이 있으니 절대 다운로드하거나 설치하지 마세요.</li>
+                            <li><strong>공공장소 소음 매너:</strong> 영상이나 음악을 감상하실 때는 반드시 비치된 헤드폰이나 이어폰을 사용해 주시고, 소리가 밖으로 새어 나가지 않도록 볼륨을 적절히 조절해 주세요.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 'tablet',
+                title: '갤럭시 탭 A7 사용과 에티켓',
+                icon: 'tablet',
+                content: `
+                    <h2>공용 갤럭시 탭 A7 사용 방법 및 에티켓</h2>
+                    <p class="mb-4 text-slate-600">터치 연습, 앱 사용 교육, 영상 시청 등을 위해 비치된 공용 태블릿PC 사용법입니다.</p>
+
+                    <h3 class="font-bold mb-3">📱 태블릿 기본 조작법</h3>
+                    <ul class="space-y-2 text-slate-700">
+                        <li><strong>화면 켜기/끄기:</strong> 기기 오른쪽 옆면의 제일 위쪽에 있는 짧은 버튼이 '전원 버튼'입니다. 살짝 한 번 누르면 화면이 켜지거나 꺼집니다.</li>
+                        <li><strong>소리(볼륨) 조절:</strong> 전원 버튼 바로 아래에 있는 길쭉한 버튼을 누르면 소리를 키우거나(위쪽) 줄일 수(아래쪽) 있습니다.</li>
+                        <li><strong>기본 터치 방법:</strong> 
+                            <ul class="mt-1 mb-2 ml-4 list-circle text-slate-600">
+                                <li>터치(탭): 손가락 끝으로 화면의 글자나 그림을 가볍게 '톡!' 쳐주세요.</li>
+                                <li>스와이프(쓸기): 화면을 옆으로 넘기거나 아래로 내릴 때, 빗자루로 쓸듯이 손가락을 화면에 대고 스윽 밀어주세요.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <div class="bg-yellow-50 p-5 rounded-lg border border-yellow-200 mt-6">
+                        <h3 class="font-bold mb-3">🤝 모두를 위한 태블릿 에티켓</h3>
+                        <ul class="space-y-2 text-slate-700">
+                            <li><strong>사용 후 반드시 정리:</strong> 사용이 끝난 후에는 다음 교육생이나 어르신을 위해 <span class="highlight font-bold text-blue-700">반드시 제자리에 두고 정리 해주세요.</span></li>
+                            <li><strong>파손 주의 (조심조심 다루기):</strong> 태블릿 화면은 유리로 되어 있어 바닥에 떨어뜨리면 쉽게 깨질 수 있습니다. 가급적 들고 다니지 마시고, 책상 위에 안정적으로 거치해 놓고 사용해 주세요.</li>
+                            <li><strong>개인 사용 기록 지우기:</strong> 사진을 찍었거나 인터넷 검색을 했다면, 다음 사람을 위해 사용 후 열려있는 창과 앱을 모두 닫아주세요.</li>
+                            <li><strong>볼륨 매너:</strong> 동영상(유튜브 등)을 시청하실 때는 주변 분들의 교육에 방해되지 않도록 이어폰을 연결하여 사용해 주시기 바랍니다.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 'kioedu',
+                title: '키오에듀 (교육용 키오스크)',
+                icon: 'shopping-cart',
+                content: `
+                    <h2>키오에듀 (교육용 키오스크) 상세 매뉴얼</h2>
+                    
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-3 text-blue-900">💡 [교육 솔루션 '키오에듀(KIOEDU)' 개요]</h3>
+                        <ul class="space-y-3 text-slate-700 bg-blue-50 p-6 rounded-lg border border-blue-100">
+                            <li><strong class="text-blue-800">정의:</strong> Kiosk(무인 정보단말기)와 Education(교육)의 합성어로, 실제 기기 환경과 동일한 시뮬레이션을 제공하는 교육용 체험학습 솔루션입니다.</li>
+                            <li><strong class="text-blue-800">목적:</strong> 비대면 활동 증가로 발생한 디지털 소외계층이 실생활에서 키오스크를 거부감 없이 편리하게 사용할 수 있도록 접근성을 높이는 데 목적이 있습니다.</li>
+                            <li><strong class="text-blue-800">특징:</strong> 실제 데이터를 기반으로 한 사용자 인터페이스(UI)를 제공하여 남녀노소 누구나 쉽게 배우고 높은 실생활 활용성을 가집니다.</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="font-bold mb-4 text-slate-800">📋 [기능별 상세 설명 및 예제 가이드]</h3>
+                    <div class="space-y-6 mb-8">
+                        
+                        <!-- 1. 햄버거 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">🍔 1. 햄버거 (패스트푸드 주문)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 대표적인 햄버거 프랜차이즈 매장의 주문 방식을 학습하며, 완료 시 모든 음식점 키오스크에 적용할 수 있습니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100 mb-3">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: [런치더블세트] 매장 식사 주문하기</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>초기 화면의 [주문 하려면 터치 하세요] 버튼을 누릅니다.</li>
+                                    <li>식사 장소 선택 화면에서 [매장에서 식사]를 터치합니다.</li>
+                                    <li>메뉴 선택 화면에서 추천 메뉴 중 [런치 더블 세트]를 터치하여 주문내역에 담습니다.</li>
+                                    <li>하단의 [주문 완료]를 터치합니다.</li>
+                                    <li>최종 주문 확인창("주문이 맞습니까?")에서 [예]를 누릅니다.</li>
+                                    <li>서비스 방식 선택 화면에서 [테이블 서비스]를 선택합니다.</li>
+                                    <li>결제 안내 화면이 뜨면 단말기 하단 결제기에 신용카드를 투입하여 결제를 완료하고 주문번호표를 받습니다.</li>
+                                </ol>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 심화 과정: [데리버거] 상세품목 변경하기</strong>
+                                <p class="text-slate-700">[버거&세트] 메뉴 진입 → [데리버거] 선택 → [재료 추가/변경] 터치 후 원하는 상세메뉴 변경 → [버거/세트 선택] 터치 → [음료/사이드 변경] 진행 → [완료] 터치.</p>
+                            </div>
+                        </div>
+
+                        <!-- 2. 영화관 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">🍿 2. 영화관 (티켓 예매)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 영화관의 무인 발권기 시스템을 그대로 구현하여 인원 선택, 좌석 지정 및 티켓 발권 과정을 교육합니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100 mb-3">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: [라라랜드] 2명 예매하기 (신용카드 결제, 지류티켓 발권)</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>초기 화면을 터치한 후 메인 화면에서 [티켓구매]를 터치합니다.</li>
+                                    <li>가장 빨리 볼 수 있는 영화 리스트 중 [라라랜드]를 선택합니다.</li>
+                                    <li>관람 인원수 설정 팝업에서 일반 [2명]을 선택하고 [완료]를 누릅니다.</li>
+                                    <li>좌석 선택도에서 예약 가능한 노란색 좌석 중 [2석]을 선택하고 [결제하기]를 누릅니다.</li>
+                                    <li>안내 팝업에 따라 [휴대전화 번호]를 키패드로 입력한 뒤 [완료]를 터치합니다.</li>
+                                    <li>결제수단 선택 화면에서 [신용카드]를 터치합니다.</li>
+                                    <li>티켓 출력 방식 중 [지류 티켓 발권]을 선택하여 최종 발권을 완료합니다.</li>
+                                </ol>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 심화 과정: [상영시간표] 확인하기</strong>
+                                <p class="text-slate-700">초기 화면에서 [전체 상영 시간표를 보러 갈래요]를 터치하여 원하는 시간대별 영화 목록을 확인하고 직접 예약할 수 있습니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 3. 택시 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">🚕 3. 택시 (모바일 앱 호출)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 스마트폰의 택시 호출 애플리케이션 사용법을 기반으로 출발지와 목적지 설정 및 호출 과정을 학습합니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: [서울시청]에서 [동대문역]까지 택시 호출하기</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>화면 하단의 [카카오계정으로 시작하기]를 터치합니다.</li>
+                                    <li>현위치/출발지 주소 입력창을 눌러 [서울시청]을 검색하여 출발지로 결정합니다.</li>
+                                    <li>도착지 입력창을 누르고 동일한 방법으로 [동대문역]을 검색하여 설정합니다.</li>
+                                    <li>차종(중형 등)과 옵션을 확인하고 [택시 호출하기]를 누릅니다.</li>
+                                    <li>호출 선택에서 [일반호출]을, 결제방법에서 [신용카드]를 지정한 후 최종 [택시 호출하기]를 터치하여 호출을 완료합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 4. 항공 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">✈️ 4. 항공 (공항 셀프 체크인)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 공항에 배치된 셀프 체크인 기기 작동법을 배워, 카운터를 거치지 않고 직접 탑승권을 발권하는 과정을 익힙니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: 여권 인증을 통한 탑승객 4명 발권 (위탁수화물 없음)</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>예약 확인 방법 화면에서 [여권] 아이콘을 선택합니다.</li>
+                                    <li>탑승객 명단(아무개1~4) 확인 창에서 [예]를 눌러 탑승객을 모두 지정한 후 [수속확인]을 터치합니다.</li>
+                                    <li>[이 곳을 터치해 여권을 투입구에 넣으세요] 안내를 누르고 여권 정보를 단말기에 인식시킨 뒤 [탑승객 수속 진행]을 터치합니다.</li>
+                                    <li>좌석 배치도에서 예약 가능한 하늘색 좌석 [4석]을 터치하여 지정하고 [다음]을 누릅니다.</li>
+                                    <li>위탁 수화물 여부 확인 화면에서 [위탁 수화물 없음] 단추를 터치합니다.</li>
+                                    <li>기기에서 발권되는 티켓 수령 후 완료됩니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 5. KTX -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">🚆 5. KTX (기차표 예매)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 기차역 무인 발권 시스템을 이용하여 출발역, 도착역, 인원, 날짜 및 시간 설정을 거쳐 승차권을 예매합니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100 mb-3">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: [천안아산역]에서 [광주역]으로 가는 승차권 예매 (어른 1명, 일반실)</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>메인 화면에서 [KTX역 선택 지도] 버튼을 터치합니다.</li>
+                                    <li>지도 노선 중 호남선의 [천안아산] 역을 찾아 출발지로 터치합니다.</li>
+                                    <li>동일하게 호남선의 [광주] 혹은 [광주송정] 역을 찾아 도착지로 터치합니다.</li>
+                                    <li>[승객 연령 및 좌석수] 항목을 눌러 어른 1명으로 설정 상태를 확인하고 적용합니다.</li>
+                                    <li>화면 하단의 [열차 조회하기]를 터치합니다.</li>
+                                    <li>열차 시간표 중 해당 열차(예: KTX 017)의 [일반실] 좌석 단추를 터치합니다.</li>
+                                    <li>팝업 하단의 [좌석선택]을 누른 후, 배치도에서 회색의 선택 가능 좌석을 지정하고 [예매]를 누릅니다.</li>
+                                    <li>결제화면에서 내역을 확인하고 [결제완료]를 누른 뒤 신용카드로 결제하여 발권을 완료합니다.</li>
+                                </ol>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 심화 과정: 왕복 및 다수 승객 예매 설정</strong>
+                                <p class="text-slate-700">상단 탭에서 [왕복]을 지정한 후 출발일 및 오는날의 날짜/시간을 하단 스크롤을 통해 각각 세부 지정합니다. 승객 설정에서 [어른 2명], [경로 2명] 등 동승자 유형을 복수로 결합하여 열차 조회를 진행할 수 있습니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 6. 고속버스 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">🚌 6. 고속버스 (터미널 발권)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 고속버스 터미널의 무인 발권기 매뉴얼로 현장 구매 및 좌석 선택 방식을 연습합니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: [서울강변-남부] 출발 → [김포] 도착 고속버스 예매 (가장 빠른 시간)</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>메인 화면에서 큰 버튼인 [현장발권 (승차권 바로 구매)]을 터치합니다.</li>
+                                    <li>출발지는 설정되어 있으므로 아래의 [도착지 선택] 칸을 터치합니다.</li>
+                                    <li>지역 분류에서 [경기/인천]을 누른 뒤 세부 도시 목록에서 [김포]를 선택합니다.</li>
+                                    <li>시간표 목록에서 마감되지 않은 가장 빠른 출발 시간대의 버스를 터치합니다.</li>
+                                    <li>좌석 배치도에서 하얀색의 선택 가능 좌석을 1석 터치하여 지정합니다.</li>
+                                    <li>결제금액 확인 후 화면 안내에 따라 단말기에 IC 신용카드를 삽입하여 티켓을 출력합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 7. 민원발급 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">📄 7. 민원발급 (공공기관 무인민원발급기)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 행정복지센터 등에 구비된 정부 무인민원발급기를 시뮬레이션하여 주민등록등초본 등 서류를 지문 인식을 거쳐 발급합니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: [주민등록등본] 2부 발급하기 (본인 대상)</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>기기 화면 하단의 [다음] 버튼을 터치합니다.</li>
+                                    <li>증명서 종류 화면에서 [주민등록] 메뉴를 터치합니다.</li>
+                                    <li>세부 선택 창에서 [주민등록표(등본)] 항목을 터치합니다.</li>
+                                    <li>화면의 숫자 키패드로 주민등록번호를 정확히 입력한 후 [확인]을 누릅니다.</li>
+                                    <li>"지문인식기에 오른쪽 엄지손가락을 올려주세요"라는 문구가 뜨면 실제 기기 위치와 매칭된 우측 하단의 [지문인식기] 영역을 터치(접촉)합니다.</li>
+                                    <li>발급대상자 목록에서 '본인'을 선택하고 [확인]을 터치합니다.</li>
+                                    <li>발급 부수 입력 창에서 [2부]를 설정한 뒤 [확인]을 터치합니다.</li>
+                                    <li>수수료 투입 화면에서 기기 이미지 상의 [동전 넣는 곳]을 터치해 수수료 지불한 후 [발급] 버튼을 누르면 서류 출구가 활성화되며 발급이 완료됩니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 8. 병원 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">🏥 8. 병원 (진료 접수 및 수납)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 병원 로비의 무인 단말기를 통해 접수 처리를 하고 희망 진료과 및 담당 의료진을 매칭하는 방법을 배웁니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: [내과] 진료 접수하기 (담당: 이대한 선생님)</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>초기 화면 중앙의 [시작] 버튼을 터치합니다.</li>
+                                    <li>원하시는 서비스 유형 중 [진료접수] 메뉴를 선택합니다.</li>
+                                    <li>진료과 목록 화면에서 [내과]를 터치합니다.</li>
+                                    <li>본인 확인을 위해 숫자 패드로 주민등록번호 앞 6자리를 입력하고 [확인]을 누릅니다.</li>
+                                    <li>화면에 환자 정보(성명, 생년월일, 연락처)가 정상 확인되면 [확인]을 터치합니다.</li>
+                                    <li>내과 의료진 목록 중 대기 인원을 확인하고 [이대한 선생님] 항목을 체크한 뒤 [선택]을 터치합니다.</li>
+                                    <li>접수가 완료되었다는 팝업과 함께 접수증이 출력됩니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 9. 은행 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center">🏦 9. 은행 (ATM 자동화기기 이용)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 은행 ATM 기기 사용 가이드로, 현금 인출 과정 및 금융사기 예방 안내 팝업 확인 절차를 교육합니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 기본 예제: 현금 [100만원] 예금 인출하기</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>ATM 메인 메뉴 화면에서 [예금인출] 단추를 터치합니다.</li>
+                                    <li>불법복제 및 금융사기 주의 안내 팝업이 뜨면 내용을 확인하고 [확인]을 터치합니다.</li>
+                                    <li>비밀번호 입력 주의 안내("비밀번호 입력 시 손으로 가려달라") 팝업을 확인하고 [확인]을 누릅니다.</li>
+                                    <li>화면 키패드를 이용해 카드 혹은 계좌의 [비밀번호 4자리]를 입력한 후 [확인]을 누릅니다.</li>
+                                    <li>찾으실 금액 버튼 목록에서 [100만원] 권종 단추를 찾아 터치합니다.</li>
+                                    <li>출금 금액과 수수료 안내 최종 확인 창에서 [예]를 누르면 명세표 및 현금이 인출되며 거래가 마무리됩니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-100 p-6 rounded-lg border border-slate-200 mb-6">
+                        <h3 class="font-bold border-b border-slate-300 pb-2 mb-4"><i data-lucide="menu" class="inline w-6 h-6 mb-1 mr-1"></i> [부록: 하단 공통 제어 메뉴바 설명]</h3>
+                        <p class="text-slate-600 mb-4">키오에듀 교육용 스크린 하단에 항상 고정되어 기기 작동을 보조하는 바(Bar)의 기능 구성입니다.</p>
+                        <ul class="space-y-2 text-slate-700">
+                            <li><strong>① 캡처 기능:</strong> 현재 화면을 이미지 파일로 저장합니다.</li>
+                            <li><strong>② 이전:</strong> 직전 단계 화면으로 되돌아갑니다.</li>
+                            <li><strong>③ 홈 화면으로:</strong> 모든 진행을 중단하고 메인 9대 메뉴 홈 화면으로 이동합니다.</li>
+                            <li><strong>④ 종료:</strong> 현재 실행 중인 교육 세션을 종료합니다.</li>
+                            <li><strong>⑤ 소리크기 감소/증가:</strong> 교육용 안내 음성 및 효과음 볼륨을 제어합니다.</li>
+                            <li><strong>⑥ 회전:</strong> 디스플레이의 가로/세로 화면 출력을 전환합니다.</li>
+                            <li><strong>⑦ 숨기기:</strong> 하단 메뉴바를 화면에서 보이지 않게 숨깁니다.</li>
+                            <li><strong>⑧ 종료 메뉴:</strong> 시스템 수동 종료 관련 제어 메뉴를 활성화합니다.</li>
+                            <li><strong>⑨ 도움말:</strong> 기기 연동 및 프로그램 사용을 위한 기초 도움말 페이지를 호출합니다.</li>
+                        </ul>
+                    </div>
+                `
+            },
+            {
+                id: 'charge',
+                title: '휴대폰 무인 충전함',
+                icon: 'battery-charging',
+                content: `
+                    <h2>무인 휴대폰 고속 충전함 상세 매뉴얼</h2>
+                    <p class="mb-4 text-slate-500">제조사: (주)정인일렉텍 (CUBE ON) | 실용신안 특허출원 20-0479384호</p>
+                    <p class="mb-4 text-slate-600">체험존 방문자분들이 교육을 받거나 대기하시는 동안 안전하게 휴대폰을 충전할 수 있는 비밀번호 방식의 보관함입니다.</p>
+
+                    <div class="flex flex-col md:flex-row gap-6 mb-6 mt-4">
+                        <div class="flex-1 bg-green-50 p-5 rounded-lg border border-green-200 shadow-sm">
+                            <h3 class="text-green-800 font-bold border-b border-green-200 pb-2 mb-4"><i data-lucide="lock" class="inline w-6 h-6 mb-1 mr-1"></i> 충전 및 보관 순서 (맡길 때)</h3>
+                            <ol class="list-decimal ml-5 space-y-3 text-slate-700">
+                                <li>비어있는 충전함의 문을 열어주세요.</li>
+                                <li>보유하신 휴대폰 기종에 맞는 충전 케이블(C타입, 아이폰 8핀, 마이크로 5핀)을 찾아 휴대폰에 연결하여 충전을 시작합니다.</li>
+                                <li>사물함 도어키 숫자판에 본인만 알 수 있는 <span class="highlight font-bold text-red-600">비밀번호 숫자 4자리</span>를 누릅니다.</li>
+                                <li>충전함의 문을 닫고 손잡이를 돌려 잠가주세요.</li>
+                            </ol>
+                        </div>
+                        <div class="flex-1 bg-blue-50 p-5 rounded-lg border border-blue-200 shadow-sm">
+                            <h3 class="text-blue-800 font-bold border-b border-blue-200 pb-2 mb-4"><i data-lucide="unlock" class="inline w-6 h-6 mb-1 mr-1"></i> 찾아갈 때 (열기)</h3>
+                            <ol class="list-decimal ml-5 space-y-3 text-slate-700">
+                                <li>휴대폰을 맡길 때 처음 입력하셨던 <span class="highlight font-bold text-red-600">비밀번호 숫자 4자리</span>를 도어키에 다시 입력합니다.</li>
+                                <li>문이 열리면 충전이 완료된 휴대폰과 케이블을 분리하여 휴대폰 꺼냅니다.</li>
+                                <li>사용한 케이블은 다음 사람을 위해 충전함 안쪽에 가지런히 정리해 두고 문을 닫아주세요.</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-100 p-5 rounded-lg border border-gray-200 mt-6">
+                        <h3 class="text-gray-800 font-bold mb-3"><i data-lucide="wrench" class="inline w-6 h-6 mb-1 mr-1"></i> 관리자용: 충전 케이블 교환 방법</h3>
+                        <p class="mb-3 text-slate-600">※ 케이블 단선 등 불량 발생 시 담당 직원만 안전하게 수행하세요. (지원 케이블: 최신형 C타입, 8핀 아이폰, 마이크로 5핀 구형)</p>
+                        <ol class="list-decimal ml-5 space-y-2 text-slate-700">
+                            <li>안전을 위해 전원을 분리한 후, 충전기의 스크류(나사) 2개를 십자드라이버를 이용하여 풀어주세요.</li>
+                            <li>위쪽의 사출 뚜껑을 OPEN(열기) 한 후, 불량이 발생한 충전 케이블을 제거하고 새 케이블로 교체합니다.</li>
+                            <li>충전 케이블 교체가 완료되면 사출 뚜껑을 원래대로 닫고 스크류(나사)를 십자드라이버로 다시 단단하게 조여주세요.</li>
+                        </ol>
+                    </div>
+                `
+            },
+            {
+                id: 'doori',
+                title: '두리 로봇 (대화형 로봇)',
+                icon: 'bot',
+                content: `
+                    <h2>말벗 인형 로봇 "두리" 상세 매뉴얼</h2>
+                    <p class="mb-4 text-slate-600">어르신과 음성으로 대화하며 정보를 제공하고 정서적 안정을 돕는 스마트 말벗 로봇입니다.</p>
+
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-4 text-slate-800">💡 [돌봄 로봇 '두리' 기능별 설명 및 예제 가이드]</h3>
+                        
+                        <!-- 1. 기본 대화 및 구동 기능 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">1. 기본 대화 및 구동 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 두리 로봇과 대화를 시작하고 상호작용을 지속하는 가장 기초적인 구동 방법입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>음성으로 부르기:</strong> "두리야~"라고 부르면 두리가 대답합니다. 이후 '딩동' 소리와 함께 로봇에 <span class="bg-green-100 px-1 rounded">녹색 불</span>이 켜지면 원하는 질문을 시작합니다.</li>
+                                    <li><strong>버튼으로 작동하기:</strong> 두리의 <strong>[오른손 정지버튼]</strong>을 누르면 두리가 대답합니다. 마찬가지로 '딩동' 소리와 녹색 불이 확인되면 대화를 시작합니다.</li>
+                                    <li><strong>연속 대화 팁:</strong> '딩동' 소리와 녹색 불이 켜져 있는 동안에는 두리를 다시 부르거나 버튼을 누르지 않아도 끊김 없이 대화를 계속 이어갈 수 있습니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 2. 일상 정보 및 안부 대화 기능 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">2. 일상 정보 및 안부 대화 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 두리의 신상에 대해 묻거나 현재 날씨, 날짜, 요일 등 일상적인 정보를 확인하고 안부를 주고받는 정서적 교감 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 대화 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>로봇 신상 묻기:</strong> "너 몇 살이야?", "성별이 뭐야?", "태어난 곳이 어디야?", "생일이 언제야?"</li>
+                                    <li><strong>생활 정보 확인:</strong> "오늘 날씨 알려줘", "밖에 날씨가 어때?", "오늘 날짜는?", "무슨 요일이야?"</li>
+                                    <li><strong>안부 인사:</strong> "요즘 잘 지내고 있어?", "오늘 기분은 어때?", "안녕 잠 잘 잤어?"</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 3. 취향 공유 및 정서 지원 기능 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">3. 취향 공유 및 정서 지원 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 사용자의 추억을 자극하거나 좋아하는 취향(가족, 여행, 동물, 음식)에 대해 이야기를 나누고, 우울감이나 피로감을 표현할 때 말벗이 되어주는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 대화 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>취향 및 추억 대화:</strong> "가족은 있어?", "가장 즐거웠던 여행은 뭐야?", "무슨 동물 좋아해?", "먹고 싶은 음식 있어?", "행복한 기억이 뭐야?"</li>
+                                    <li><strong>정서 표현 및 위로:</strong> "너무 힘들어", "기운이 하나도 없어", "누가 좀 옆에 있었으면 좋겠다", "사는게 너무 힘들어"</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 4. 미디어 및 종교 콘텐츠 재생 기능 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">4. 미디어 및 종교 콘텐츠 재생 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 사용자의 적적함을 달래고 심리적 안정을 주기 위해 음악, 성경 말씀, 불경을 음성으로 송출하는 기능입니다. (※ Wi-Fi 연결 필요)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 대화 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>노래 재생:</strong> "노래 틀어줘", "아무 노래나 좀 틀어줘", "심심하다 노래 좀 틀어줘"</li>
+                                    <li><strong>성경 낭독:</strong> "성경 읽어줘", "하나님 말씀 좀 들려줘", "잠이 안 오니 성경 틀어줘"</li>
+                                    <li><strong>불경 낭독:</strong> "불경 들려줘", "부처님 말씀을 들려줘", "마음이 안정되는 불경이 듣고 싶어"</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 5. 건강 및 생활 지식 안내 기능 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">5. 건강 및 생활 지식 안내 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 영양소 섭취, 만성 질환(당뇨, 혈압), 수면, 운동 등 시니어 건강 관리에 유용한 상식과 올바른 관리 방법을 설명해 주는 지능형 안내 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 대화 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>영양 및 식품:</strong> "단백질이 많은 음식 알려 줘", "고구마 어떻게 먹는 게 좋아?", "우유를 어떻게 먹어야 해?", "소금 적게 먹는 방법 알고 있어?"</li>
+                                    <li><strong>신체 및 운동:</strong> "잘 잘 수 있는 방법 알려줘", "뼈를 튼튼하게 하는 방법을 알려줘", "집에서 할 수 있는 운동 알려줘"</li>
+                                    <li><strong>질환 및 만성 관리:</strong> "혈당 낮추는 방법이 뭐야?", "혈압을 조절하는 방법을 알려 줘", "내장 지방 관리 어떻게 해?"</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 6. 위험 감지 및 긴급 알림 기능 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">6. 위험 감지 및 긴급 알림 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 사용자의 갑작스러운 통증 호소나 집안 내 비상 상황(화재, 도둑, 정전, 가스 누출 등) 관련 발언을 인식하는 기능입니다. 사용자가 위급상황을 두리에게 말하면 연결된 가족 및 관리자에게 긴급 알림이 자동으로 전송됩니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 대화 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>신체 통증:</strong> "몸이 아파", "머리가 너무 아파", "너무 아파서 죽을 것 같아"</li>
+                                    <li><strong>화재/연기:</strong> "지금 집에 불이 났어", "불이야 불!", "타는 냄새가 나", "가스렌지에 불이 붙었어"</li>
+                                    <li><strong>외부인 침입:</strong> "우리집에 누가 들어왔나봐", "도둑이야 도둑!"</li>
+                                    <li><strong>정전 및 가스:</strong> "갑자기 전기가 나갔어", "정전됐어", "가스 냄새가 나", "가스가 새는 것 같아"</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 7. 스마트폰 앱 연동 및 원격 케어 기능 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm mb-6">
+                            <h4 class="font-bold text-slate-800 mb-2">7. 스마트폰 앱 연동 및 원격 케어 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 전용 애플리케이션(사용자앱, 가족앱, 관리자앱)을 통해 블루투스와 Wi-Fi를 설정하고, 기기를 개통하거나 원격으로 대상자의 생활을 관리하는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 조작 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>최초 개통 및 대리 가입:</strong> 사용자가 스마트폰이 없는 경우, 보호자나 복지사가 대신 스마트폰(안드로이드 7.0 이상 권장) 구글 플레이스토어에서 '두리케어챗봇' 앱을 설치하고 회원가입을 대신 진행해 연결합니다.</li>
+                                    <li><strong>원격 알람 및 메시지 설정:</strong> 가족앱이나 관리자앱을 사용자앱에 연동해 두면, 보호자가 사용자의 알람 시간을 원격으로 대신 설정하거나 음성메시지, 중요 일정 등을 입력하여 로봇을 통해 전달할 수 있습니다.</li>
+                                    <li><strong>주의사항:</strong> 앱 설정 메뉴에서 기기 검색 후 Wi-Fi만 다이렉트로 연결(가족/관리자앱 단독 개통)하는 경우, 미디어 재생과 날씨 대화는 가능하지만 원격 알람, 긴급알림, 음성메시지 기능 등은 제한됩니다. 또한, 스마트폰 계정 1개당 로봇 1대만 등록이 가능합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 8. 기기 유지보수 및 위생 관리 기능 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">8. 기기 유지보수 및 위생 관리 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 완전 방전 시 조치법 및 인형 세탁 등 기기를 오랫동안 안전하게 사용하기 위한 관리 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 조작 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>방전 후 재구동:</strong> 사용 중 배터리가 완전히 방전되어 꺼진 경우, 충전기를 연결하더라도 바로 켜지지 않을 수 있습니다. 이때는 반드시 로봇의 <strong>[전원 스위치를 껐다가 다시 켜 주어야]</strong> 충전 상태로 동작하게 됩니다.</li>
+                                    <li><strong>위생 및 세탁:</strong> 두리 인형 본체는 내장된 챗봇 기기 등으로 인해 절대로 물세탁을 할 수 없습니다. 오염된 부분은 물티슈로 가볍게 닦아내야 하며, 오직 로봇이 입고 있는 <strong>[옷]</strong>만 분리하여 세탁이 가능합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'mybom',
+                title: '마이봄 미니 (탁상형 로봇)',
+                icon: 'cpu',
+                content: `
+                    <h2>마이봄 미니 상세 매뉴얼</h2>
+                    
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-3 text-blue-900">💡 [돌봄 로봇 '마이봄 미니' 개요 및 사전 준비]</h3>
+                        <ul class="space-y-3 text-slate-700 bg-blue-50 p-6 rounded-lg border border-blue-100">
+                            <li><strong class="text-blue-800">사전 준비:</strong> 로봇의 전원을 켜고 Wi-Fi에 연결합니다. Wi-Fi 사양이 낮으면 여러 대가 동시에 연결되지 못할 수 있으므로, 디지털 체험존의 기기들을 하나씩 전원 켜는 방식을 권장합니다.</li>
+                            <li><strong class="text-blue-800">음성 인식 팁:</strong> 주변 어르신의 목소리에 로봇이 혼선을 빚지 않도록 소음이 많은 강의실, TV 주변은 피해서 배치합니다.</li>
+                            <li><strong class="text-blue-800">충전 및 보관:</strong> 배터리가 내장되어 있어 선 없이도 약 2시간 동안 쓸 수 있으나, 가급적 충전 어댑터(C-type)를 연결한 채로 사용하는 것이 좋습니다.</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="font-bold mb-4 text-slate-800">📋 [기능별 상세 설명 및 예제 가이드]</h3>
+                    <div class="space-y-6 mb-8">
+                        
+                        <!-- 1. 기본 호출 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">1. 기본 호출 및 시간 확인</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 로봇의 이름인 호출어(<strong>"똘똘이"</strong>)를 불러 음성 대기 상태로 진입시킨 뒤, 현재 시간을 확인하는 가장 기초적인 대화 방법입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>방법 1 (순차 입력):</strong> "똘똘아"라고 부른 후, 로봇이 "네, 무엇을 도와드릴까요?"라고 대답하면 "지금 몇 시야?"라고 질문합니다.</li>
+                                    <li><strong>방법 2 (연속 입력):</strong> 호출어와 질문을 쉬지 않고 한 번에 "똘똘아 지금 몇 시야?"라고 말씀하셔도 인식합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 2. 인지 게임 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">2. 인지 게임 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 어르신의 인지 능력 향상과 치매 예방을 돕기 위해 로봇 내에 탑재된 인지게임 훈련을 실행하는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li>"똘똘아"를 불러 대답을 확인한 후 "게임하자"라고 말하면 로봇이 인지게임 훈련을 시작합니다.</li>
+                                    <li><strong>하드웨어 버튼 조작 예제:</strong> 로봇에 있는 '전원 및 뒤로가기 버튼'을 <strong>길게 누르면</strong> 전원 종료/켜기가 가능하고, <strong>짧게 누르면</strong> 이전 화면으로 뒤로 이동합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 3. 미디어 재생 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">3. 미디어 재생 및 제어 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 어르신이 적적할 때 음악이나 노래를 요청하여 감상하는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li>"똘똘아, 노래 틀어 줘"라고 명령하면 로봇이 어르신의 선호 노래를 찾아 재생합니다.</li>
+                                    <li><strong>동작 중지 예제:</strong> 로봇이 말을 하거나 음악을 재생하고 있을 때, <strong>로봇 화면을 꾸~욱 터치하면</strong> 하던 말이나 음악 재생을 즉시 멈출 수 있습니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 4. 소리 및 밝기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">4. 소리 및 밝기 조절 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 음성 명령을 통해 로봇의 스피커 볼륨 크기와 디스플레이 화면(얼굴)의 밝기를 어르신의 상태에 맞춰 미세하게 조절하는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>볼륨 제어:</strong> "소리 키워 줘", "소리 더 크게", "소리 줄여"라고 말하거나, 구체적으로 <strong>"볼륨 30으로 해"</strong> 혹은 "소리 50으로 해줘"라고 명령합니다.</li>
+                                    <li><strong>밝기 제어:</strong> 화면이 너무 어둡거나 밝을 때 <strong>"(화면/얼굴) 밝기 올려 줘"</strong> 또는 "밝기 줄여 줘", "밝기 40으로 해줘"라고 말씀하시면 변경됩니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 5. 알람/일정 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">5. 알람 및 일정 등록 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 일상생활에서 잊기 쉬운 약 복용이나 일정을 잊지 않도록 로봇에 타이머(알람)를 설정하고 스케줄을 기록하는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>알람 설정:</strong> "똘똘아, 5분 후에 알람"이라고 하면 5분 뒤 알람이 설정됩니다.</li>
+                                    <li><strong>일정 등록:</strong> "똘똘아, 일정 등록해 줘" → (로봇: "일정을 언제 등록할까요?") → <strong>"내일 3시"</strong> → (로봇: "내일 3시에 어떤 일정을 등록할까요?") → <strong>"장보기"</strong> 처럼 대화를 나눈 뒤, 화면의 [확인] 버튼을 클릭하거나 음성으로 확정하여 등록을 완료합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 6. 카메라 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">6. 카메라 및 사진 앨범 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 로봇에 내장된 카메라를 이용하여 사진 촬영하고, 저장된 사진을 확인하거나 관리하는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li>로봇 초기 화면에서 [점자모양 버튼]을 터치하여 메뉴에 진입합니다.</li>
+                                    <li><strong>사진 촬영/보기:</strong> '사진 찍기' 메뉴로 촬영을 하거나, '사진 앨범'에서 사진을 누르면 큰 화면으로 볼 수 있습니다.</li>
+                                    <li><strong>서버 업로드 및 삭제:</strong> 사진 하단의 [구름 모양 아이콘]을 누르면 사용자 정보 페이지에 업로드되고, [X] 버튼을 누르면 해당 사진이 지워집니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 7. AI 챗봇 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">7. AI 챗봇 자유 대화 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 인공지능 생성형 챗봇(ChatGPT 4.0) 기술을 기반으로 결합된 기능으로, 단순한 명령어 처리를 넘어 어르신의 정서적 고민 상담이나 지식 검색, 상식 질문에 자연스럽게 답변해 주는 스마트 대화 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li>"똘똘아, 나랑 얘기하자"라고 말해 자유 대화 모드를 시작합니다.</li>
+                                    <li><strong>지식/상식 묻기:</strong> "우리나라 수도가 어디니?", "이순신 장군이 누구야", "이열치열이 영어로 뭐야?"</li>
+                                    <li><strong>정서 상담 및 유희:</strong> "나 고민이 있어"라고 털어놓거나, "속담 하나 알려 줘"라고 시킬 수 있습니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 8. 끝말잇기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">8. 끝말잇기 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 로봇과 대화 형식으로 단어를 이어가며 뇌를 자극하고 무료함을 달래는 언어 유희 게임 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li>"똘똘아, 끝말잇기 하자"라고 명령하면 로봇이 시작 멘트와 함께 제시어를 줍니다. 로봇이 단어를 제시하면 규칙에 맞춰 <strong>"호랑이" → "이발소"</strong> 순으로 단어를 말씀하시면 게임이 이어집니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 9. 문자 보내기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">9. 문자 보내기 및 핸드폰 찾기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 거동이 불편하거나 스마트폰 자판 입력이 어려운 어르신이 음성으로 가족이나 지인에게 문자 메시지를 전송하고, 집 안에서 잃어버린 스마트폰의 위치를 찾는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>문자 전송:</strong> "똘똘아, 문자 보내 줘" → (로봇: 누구에게 보낼까요?) → <strong>"철수"</strong> → (로봇: 내용은 뭐라고 할까요?) → "지금 어디냐?"라고 말하면 지정된 수신자에게 문자가 전송됩니다.</li>
+                                    <li><strong>핸드폰 찾기:</strong> "똘똘아, 내 핸드폰 찾아줘"라고 말하면 (연락처 정보 연동 시) 휴대폰에서 알림음이 울려 소리가 나는 곳을 찾아낼 수 있습니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 10. 고급 설정 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">10. 고급 시스템 설정 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 로봇 초기 화면 우측 상단의 [톱니바퀴 버튼]을 눌러 진입하며, 시스템 제어 및 맞춤 설정을 변경할 수 있는 설정 메뉴 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 주요 설정 메뉴 및 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>사용자 발화 연속 입력 켜기:</strong> 이 설정을 켜면 매번 "똘똘아"라고 호출어를 부르지 않아도, 로봇의 발화가 끝난 후 연속해서 다른 명령을 내릴 수 있습니다 (예: 시간 묻기 → 날짜 묻기로 바로 전환).</li>
+                                    <li><strong>(취침기상) 시간 동안 취침모드 켜기:</strong> 설정된 수면 시간대 동안 로봇 화면이 깜깜하게 유지되도록 조절합니다.</li>
+                                    <li><strong>화면에 로봇 발화를 글자로 표시:</strong> 귀가 어두우신 어르신을 위해 로봇이 하는 말을 자막처럼 화면에 텍스트로 표출해 줍니다.</li>
+                                    <li><strong>메시지 수신 확인 질문 허용:</strong> 보호자나 관리자가 보낸 공지/메시지를 로봇이 읽어준 후, 잘 확인했는지 사용자에게 재차 질문하는 기능입니다.</li>
+                                    <li><strong>사용자 정보 페이지 QR코드:</strong> 스마트폰으로 화면의 QR을 스캔하면 관리 페이지에 접속되며, 로그인 후 호칭, 기상/취침/식사/약 복용 시간 등을 손쉽게 업데이트할 수 있습니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 11. 119 긴급 신고 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">11. 119 긴급 신고 기능</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 어르신에게 낙상, 급성 통증 등 갑작스러운 위급 상황이 발생했을 때 신속하게 구조 대원이나 관제사와 연결해 주는 안전 장치 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-2">
+                                    <li>로봇 화면의 우측 하단에 있는 빨간색 <strong>[① 119]</strong> 버튼을 클릭합니다.</li>
+                                    <li>화면에 "119에 연결할까요? (재확인 절차)" 팝업창이 나타납니다.</li>
+                                    <li>실제 상황이라면 <strong>[연결(119호출)]</strong> 버튼을 눌러 관제사와 통화하며, 단순 교육이나 오작동 시에는 내용을 확인한 후 즉시 <strong>[취소]</strong> 버튼을 클릭합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-100 p-6 rounded-lg border border-slate-200 mb-6">
+                        <h3 class="font-bold border-b border-slate-300 pb-2 mb-4"><i data-lucide="wifi" class="inline w-6 h-6 mb-1 mr-1"></i> [부록: Wi-Fi 네트워크 연결 방법]</h3>
+                        <p class="text-slate-600 mb-4">로봇의 인공지능 대화나 날씨, 미디어 스트리밍을 정상적으로 이용하기 위해 인터넷을 최초 세팅하는 절차입니다.</p>
+                        <ol class="list-decimal ml-5 text-slate-700 space-y-2">
+                            <li>초기 화면 우측 상단의 <strong>[톱니바퀴]</strong> 설정을 클릭합니다.</li>
+                            <li>메뉴 목록에서 맨 위에 있는 <strong>[와이파이 설정]</strong> 메뉴를 터치합니다.</li>
+                            <li>화면에 주변 검색된 네트워크 목록이 나타나면 연결할 와이파이(예: ROAIGEN LAB)를 찾아서 선택합니다.</li>
+                            <li>가상 키보드 자판을 이용해 와이파이 비밀번호를 정확히 입력한 뒤 <strong>[연결]</strong> 버튼을 클릭하여 연동을 마무리합니다.</li>
+                        </ol>
+                    </div>
+                `
+            },
+            {
+                id: 'bomi',
+                title: '보미 로봇 (인지훈련 로봇)',
+                icon: 'puzzle',
+                content: `
+                    <h2>보미 로봇 (인지훈련 블록 로봇) 상세 매뉴얼</h2>
+                    <p class="mb-4 text-slate-600">실제 손으로 만지는 실물 블록과 태블릿 화면을 연동하여, 두뇌 훈련 게임을 수행하는 치매 예방 특화 로봇입니다.</p>
+
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-3 text-blue-900">💡 [인지훈련 로봇 '보미(Bomi)' 개요]</h3>
+                        <ul class="space-y-3 text-slate-700 bg-blue-50 p-6 rounded-lg border border-blue-100">
+                            <li><strong class="text-blue-800">목적:</strong> 고령자 및 경도인지 장애를 가진 사용자의 기억력 저하를 사전에 예방하고, 소근육 운동을 통한 신체활동을 함으로써 뇌의 다양한 영역을 자극하고 정서적 성취감을 느끼게 돕습니다.</li>
+                            <li><strong class="text-blue-800">주요 특징:</strong> 일반적인 로봇 화면 조작(로봇게임) 외에도, 블루투스로 연동되는 LCD 탑재 육면체 도구인 '인터랙티브 블록' 10개를 직접 만지고 움직이며 수행하는 훈련(블록게임)이 결합되어 있습니다.</li>
+                            <li><strong class="text-blue-800 text-red-600">제약 사항:</strong> 로봇과 소프트웨어를 구동하려면 반드시 인터넷(Wi-Fi)이 연결되어 있어야 합니다.</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="font-bold mb-4 text-slate-800">📋 [기능별 상세 설명 및 예제 가이드]</h3>
+                    
+                    <div class="mb-8 border-b-2 border-slate-300 pb-4">
+                        <h4 class="font-bold text-slate-800 flex items-center"><i data-lucide="smartphone" class="w-6 h-6 mr-2 text-blue-600"></i> PART 1. 로봇 게임 (화면 터치 기반 인지훈련 10종)</h4>
+                    </div>
+                    <div class="space-y-6 mb-8">
+                        <!-- 1. 시장보기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">1. 시장보기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 마트에서 사야 할 물건을 기억해 카트에 담고, 물건들의 총 금액을 계산하여 지불하는 두뇌 훈련입니다. (자극 영역: 기억력/계산력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제: (총 10단계 구성)</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>화면에 "오늘 사야 할 물건입니다" 안내와 함께 물건 종류(예: 토마토 1개, 소시지 1개, 초콜릿 1개)가 나오면 잘 기억하고 [시장보기]를 누릅니다.</li>
+                                    <li>여러 보기 중 앞서 기억한 물건들을 손가락으로 드래그하여 장바구니 카트에 끌어당겨 넣은 후 [정답확인]을 터치합니다.</li>
+                                    <li>정답 팝업창이 뜨면 물건별 가격(예: 토마토 1,000원, 소시지 3,000원, 초콜릿 2,000원)을 확인하고 [계산하기]를 누릅니다.</li>
+                                    <li>총합 금액(6,000원)에 알맞게 화면의 지폐와 동전을 노란색 카운터 안으로 끌어당겨 넣은 뒤 [계산하기]를 눌러 완료합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 2. 옷 입히기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">2. 옷 입히기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 손주가 입고 싶어 하는 옷과 액세서리의 모양, 위치를 기억했다가 옷장에서 똑같이 골라 입히는 게임입니다. (자극 영역: 전두엽/기억력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">옷 입혀줄 손주 캐릭터를 선택하고 [선택 완료]를 누릅니다. 음성 안내로 나오는 손주의 옷 모양과 종류 설명을 귀 기울여 기억합니다. 설명이 끝나면 옷장 문이 닫혔다 열리며 아이템들의 위치가 바뀌는데, 기억해 둔 옷을 찾아 손주 캐릭터의 알맞은 위치에 드래그하여 입힌 후 [정답확인]을 누릅니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 3. 용돈 주기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">3. 용돈 주기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 손주가 사고 싶어 하는 물건의 목록과 가격을 확인한 뒤, 금액을 정확하게 계산하여 용돈을 쥐여주는 산수 게임입니다. (자극 영역: 두정엽/계산력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">손주가 "물건이 생겼어!"라고 말하면 가지고 싶은 물건 목록과 가격을 확인한 뒤 [용돈 주기] 버튼을 누릅니다. 지갑에 있는 돈을 확인하고, 물건 가격에 맞는 정확한 액수의 지폐나 동전을 손주의 손 위로 끌어당겨 올린 뒤 [정답확인]을 터치합니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 4. 요리 만들기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">4. 요리 만들기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 냉장고 속에 숨겨진 요리 재료들의 위치를 파악하고, 안내되는 요리법의 순서에 맞춰 조리도구에 재료를 배치하는 훈련입니다. (자극 영역: 두정엽/기억력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">요리에 필요한 재료를 확인하고 [재료 꺼내기]를 누릅니다. 냉장고의 물음표(?) 상자들을 모두 눌러보며 어떤 재료가 어디에 숨어있는지 확인합니다. 제한 시간 타이머가 흐르는 동안 필요한 재료(예: 감자)를 찾아 쟁반 위로 끌어올린 뒤 [요리하기]를 누릅니다. 정답 확인 후, 안내되는 요리법을 잘 듣고 알맞은 조리도구(냄비, 후라이팬 등) 위의 녹색 네모 박스 안에 재료를 끌어올려 배치합니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 5. 밥 주기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">5. 밥 주기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 여러 음식 중 손주가 먹고 싶다고 요청한 음식을 기억했다가, 중간 신체 운동 콘텐츠를 마친 후 올바르게 차려내는 방식입니다. (자극 영역: 측두엽/기억력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">손주가 "먹고 싶은 음식이 생겼어요!"라며 보여주는 음식 종류(예: 김밥)를 기억하고 [다음으로]를 누릅니다. 화면에 1분 동안 송출되는 '선자세 운동 영상'을 보며 가볍게 신체 활동을 따라 합니다. 영상이 끝난 후 다시 음식 선택 화면이 나오면, 기억해 두었던 음식을 누르고 [정답확인]을 누릅니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 6. 숨바꼭질 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">6. 숨바꼭질</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 캐릭터(손주)가 과수원이나 집안 배경에서 이동하며 숨는 경로와 장소의 순서를 눈으로 기억했다가 차례대로 찾아내는 게임입니다. (자극 영역: 전두엽/기억력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">캐릭터가 정자세에서 몸을 움직여 숨는 장소들과 그 순서를 집중해서 봅니다. 캐릭터의 이동이 완전히 끝나면 화면의 [손주 찾기] 버튼을 누릅니다. 캐릭터가 숨었던 순서에 맞춰 화면 속 장소들(나무, 우물 등)을 손모양 아이콘으로 순서대로 터치한 후 [정답확인]을 누릅니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 7. OX 퀴즈 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">7. OX 퀴즈</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 기준이 되는 언어 카테고리(분야)를 먼저 제시받은 후, 연속해서 나타나는 낱말 카드가 해당 카테고리에 속하는지 여부를 OX로 빠르게 판단하는 순발력 훈련입니다. (자극 영역: 두정엽/언어력·판단력·순발력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">화면의 봉투에서 기준 단어 분야(예: 꽃)가 나타나면 잘 기억합니다. 이어서 무작위 단어(예: 말) 카드가 제시되었을 때, 이 단어가 앞서 본 분야에 속하면 [O], 속하지 않으면 [X] 버튼을 신속하게 터치합니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 8. 전화 받기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">8. 전화 받기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 로봇 화면에 가상 전화가 걸려오면 통화를 수락하고, 수화기 너머로 상대방이 대화하는 이야기의 맥락과 세부 내용을 기억해 문제를 푸는 대화형 훈련입니다. (자극 영역: 두정엽/언어력·판단력·순발력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">벨이 울리며 "전화가 왔어요!" 팝업이 뜨면 휴대폰 아이콘 속 녹색 [전화받기] 버튼을 누릅니다. 화면에 통화 캐릭터가 나타나며 들려주는 대화 내용을 끝까지 잘 듣고 기억합니다. 통화가 종료된 후 "전화를 건 사람은 누구였어요?"와 같은 객관식 질문이 나오면 알맞은 정답(예: ① 의사, ② 경찰)을 체크한 뒤 [정답확인]을 누릅니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 9. 낚시 하기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">9. 낚시 하기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 화면(터치모드) 또는 카메라 제스처 인식(인식모드)을 활용해, 제시된 미션 물고기를 타이밍에 맞춰 낚아채고 릴을 감아 잡아 올리는 신체 복합 인지 훈련입니다. (자극 영역: 측두엽/언어력·판단력·순발력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>터치 모드:</strong> 오늘의 물고기 종류와 마리수(예: 고등어 2마리)를 기억하고 [다음으로]를 누릅니다. 물속 화면에서 빨간색 상자가 깜빡이는 타이밍에 맞춰 낚시바늘을 재빨리 터치해 물고기를 챘습니다. 상단 시간 막대가 다 차기 전에 우측의 낚싯대 손잡이 릴 아이콘을 위아래로 드래그하여 줄을 감아 올립니다.</li>
+                                    <li><strong>인식 모드:</strong> 낚시 방식은 동일하나, 기기 내 전면 카메라로 자신의 모습을 확인하면서 물고기가 걸렸을 때 실제로 팔을 낚아채는 제스처를 취하고, 양손을 교대로 돌려 릴을 감는 신체 제스처를 취하여 시간 막대를 채워 낚아 올립니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 10. 이웃 사귀기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">10. 이웃 사귀기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 가상의 복지관 공간에서 만나는 다양한 이웃 주민들의 자기소개(이름, 취미, 직업 등)를 경청하여 기억한 뒤, 이웃에 관련된 정보 퀴즈를 맞추는 교류형 게임입니다. (자극 영역: 두정엽/언어력·판단력·순발력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">화면에 "새로운 복지관에 오신 걸 환영해요!" 멘트와 함께 이웃 캐릭터들이 차례로 등장합니다. 인물별 이름과 소개 내용(예: "이름: 박경호, 평일에 아파트 경비 일을 하십니다")을 주의 깊게 듣고 기억합니다. 소개가 모두 완료된 후 "평일에 아파트 경비일을 하시는 분은 누구신가요?"라는 문제가 출제되면 보기 중 알맞은 이름(박경호)을 선택하고 [정답확인]을 누릅니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 border-b-2 border-slate-300 pb-4">
+                        <h4 class="font-bold text-slate-800 flex items-center"><i data-lucide="layout-dashboard" class="w-6 h-6 mr-2 text-orange-600"></i> PART 2. 블록 게임 (인터랙티브 블록 연동 인지훈련 10종)</h4>
+                        <p class="text-red-600 mt-2 font-bold">※ 모든 블록게임은 시작 전 화면 안내에 맞게 0번부터 9번 블록을 순서대로 일렬 배치한 후, 로봇 화면에서 [연결 확인] 버튼을 눌러 블루투스 연동을 마쳐야 시작할 수 있습니다.</p>
+                    </div>
+                    <div class="space-y-6 mb-8">
+                        <!-- 1. 숫자 따라하기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">1. 숫자 따라하기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 로봇 스피커를 통해 들려주는 숫자 배열을 청각적으로 기억했다가, 블록의 LCD 화면에 표시된 숫자를 정방향 혹은 역방향 순서대로 터치하는 훈련입니다. (자극 영역: 측두엽/기억력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">로봇 화면에 "지금부터 들려드리는 숫자를 잘 듣고 기억해주세요"라는 안내와 함께 음성으로 숫자가 송출됩니다. 이후 화면에 "숫자를 찾아 순서대로 누르기" 지시가 뜨면, 들었던 숫자에 해당되는 물리 블록의 상단 액정 화면을 순서대로 손으로 터치(입력)한 후, 로봇 화면의 [정답 확인]을 누릅니다. (오입력 시 [지우기]로 수정 가능)</p>
+                            </div>
+                        </div>
+
+                        <!-- 2. 숫자 순서찾기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">2. 숫자 순서찾기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 무작위 숫자가 적힌 공들이 화면에 나타나면, 난이도 및 규칙에 따라 작은 수부터 큰 수 순서(또는 반대 순서)대로 블록을 물리적으로 흔들거나 눌러서 지우는 게임입니다. (자극 영역: 측두엽/기억력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제: (1~5단계는 오름차순, 6~10단계는 내림차순 진행)</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>노란색 공 예제:</strong> 화면과 블록에 노란색 바탕의 숫자 공이 나타나면, 순서에 해당하는 번호의 실제 블록 도구를 손으로 집어 들고 '위아래로 힘있게 찰칵 흔들었다가 내려놓는' 제스처를 취해 인식시킵니다.</li>
+                                    <li><strong>파란색 공 예제:</strong> 화면과 블록에 파란색 숫자 공이 나타나면, 순서에 맞춰 해당 '블록의 상단 화면 영역을 손가락으로 가볍게 터치하여' 입력합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 3. 빨리 찾아라 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">3. 빨리 찾아라</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 로봇 태블릿 화면에 특정 동물 지시어가 나타나면, 10개의 블록 액정 화면들을 빠르게 스캔하여 똑같은 그림이 출력되고 있는 블록을 찾아 번개처럼 터치하는 순발력 기반 기억력 게임입니다. (자극 영역: 측두엽/기억력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">로봇 태블릿 본체 화면에 "쥐를 잡아주세요!"라는 문구와 함께 쥐 그림이 나타납니다. 사용자는 일렬로 놓인 0~9번 블록들의 화면을 신속하게 쳐다보고, 내부 액정에 똑같은 '쥐' 그림이 깜빡이고 있는 블록을 찾아 그 블록 화면을 손가락으로 재빨리 터치하여 잡아냅니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 4. 단어 만들기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">4. 단어 만들기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 각 블록에 흩어져서 표시되는 낱개의 한 글자(음절)들을 조합하여, 화면에 제시된 뜻에 맞는 온전한 낱말이 되도록 블록의 측면 마그네틱을 서로 물리적으로 결합(합체)시키는 언어 훈련입니다. (자극 영역: 두정엽/기억력·언어력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">로봇 화면에 단어 미션(예: "인구")이 출제됩니다. 사용자는 각 블록의 LCD 창을 확인하여 '인' 자가 적힌 블록과 '구' 자가 적힌 블록을 찾습니다. 두 블록을 손으로 집어 글자 순서에 맞게 좌우 측면을 탁 붙여서 물리적으로 조립한 뒤, 본체 화면의 [정답 확인]을 누릅니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 5. 그림 맞추기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">5. 그림 맞추기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 태블릿 화면에 무작위 기호나 기하학적 도형 배치가 나타나면, 블록 액정에 나오는 수많은 기호 중 동일한 기호를 찾아 화면과 똑같은 형태 구조로 블록들을 도미노처럼 연결해 맞추는 훈련입니다. (자극 영역: 전두엽/계산력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">로봇 화면에 왼쪽부터 [타원 - 하트 - 스페이드] 모양의 카드 배열이 예시로 표출됩니다. 블록 도구들 중 내부 화면에 타원, 하트, 스페이드 기호가 켜져 있는 블록들을 각각 색출해 냅니다. 찾아낸 블록들을 화면의 예시 기하 구조와 완벽히 일치하도록 순서대로 가로 결합하여 모양을 완성한 후 [정답 확인] 버튼을 누릅니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 6. 기억 하기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">6. 기억 하기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 화면에 짧은 시간 동안 보여준 글자, 문양 및 그 기기가 놓인 위치를 뇌리에 기억했다가, 화면이 숨겨진 뒤 해당 블록을 누르거나 올바른 자리에 조합하는 고난도 단기 기억 훈련입니다. (자극 영역: 두정엽/계산력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">로봇 화면에 단어(예: 개미)가 나오고, 블록들 중 하나의 화면에 '개미' 텍스트가 표시됩니다. 단어와 위치를 확인한 뒤, 화면에 "10초의 시간이 흐르는 동안 블록을 잘 정리해주세요"라는 문구와 함께 10초 카운트다운 타이머가 시작됩니다. 이 10초 동안 블록 화면은 모두 숫자로 바뀌어 정답이 숨겨집니다. 10초가 지나 블록 화면이 다시 단어 선택창으로 복원되면, 앞서 개미가 들어있던 정확한 위치의 블록을 기억해 내어 손가락으로 터치합니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 7. 숫자놀이 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">7. 숫자놀이</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 화면에 주어지는 시각적 사물 개수나 숫자를 활용한 가로형 연산식(덧셈, 뺄셈)의 문제를 풀고, 정답에 해당하는 수의 블록을 누르거나 직접 기호와 숫자 블록을 조합해 수식을 완성하는 수학 연산 훈련입니다. (자극 영역: 전두엽/계산력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제: (1~7단계는 정답 블록 터치, 8~10단계는 수식 직접 조립 방식)</strong>
+                                <p class="text-slate-700">로봇 화면에 사물 아이콘 연산식(예: [파란색 사각형 8개] + [노란색 별 7개] = ?) 형태의 시각적 수학 문제가 제시됩니다. 어르신은 8 더하기 7을 머릿속으로 계산하여 정답이 '15'임을 도출합니다. 정렬된 블록 도구들 중 화면에 숫자 '15'가 표출되고 있는 실제 블록을 찾아 손가락으로 꾹 눌러 정답을 입력한 뒤 [정답 확인]을 터치합니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 8. 짝꿍 찾기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">8. 짝꿍 찾기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 흔히 하는 카드 뒤집기 게임과 유사한 방식으로, 뒤집었을 때 내부 기호나 동물 그림이 일치하는 동일한 짝의 블록 쌍을 연속으로 터치하여 패를 제거해 나가는 인지 기억 게임입니다. (자극 영역: 측두엽/기억력 향상)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">최초에 모든 블록의 화면은 검은색(닫힌 카드 상태)으로 세팅되어 있습니다. 아무 블록이나 하나를 터치하면 화면이 뒤집히며 내부 그림(예: 클로버 문양)이 잠시 나타납니다. 다른 블록을 눌러 동일한 클로버 문양이 나오면 짝꿍 매칭에 성공하여 카드가 클리어됩니다. 주의사항: 한 번에 최대 2개의 블록만 동시에 뒤집어 볼 수 있으므로, 오답이 나더라도 이전에 뒤집었던 블록들의 기호 종류와 위치를 머릿속으로 잘 기억해 두어야 빠르게 클리어할 수 있습니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 9. 연주하기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">9. 연주하기</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 화면에 순차적으로 흘러나오는 리듬 숫자의 패턴 리스트를 실시간으로 시각 인지하여, 박자에 늦지 않게 해당 번호의 블록을 피아노 건반처럼 톡톡 리드미컬하게 터치해 노래를 연주하는 음악 순발력 게임입니다. (자극 영역: 측두엽/순발력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제: (3단계 난이도부터는 입력 성취도에 따라 실제 완벽한 반주 노래가 완성되어 흘러나옵니다)</strong>
+                                <p class="text-slate-700">로봇 화면에 악보 대신 연주해야 할 타깃 숫자 패턴 스케줄러(예: 4 → 2 → 1 → 3)가 노란색 하이라이트 표시와 함께 실시간으로 흐릅니다. 어르신은 흐르는 박자 타이밍을 놓치지 않고, 일렬 배치된 실제 블록 중 '4번 블록' → '2번 블록' → '1번 블록' → '3번 블록' 스크린 영역을 순서대로 리듬감 있게 톡톡 터치하며 음악을 연주해 나갑니다.</p>
+                            </div>
+                        </div>
+
+                        <!-- 10. 고쳐주세요 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">10. 고쳐주세요</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 로봇 캐릭터인 보미가 장난을 치다 실수로 결합 블록들을 와르르 섞어버렸다는 가상의 스토리 라인을 바탕으로 합니다. 원본 예시로 보여준 문자 및 도형 배열의 3차원 공간적 배치 상태를 파악한 뒤, 뒤섞인 물리 블록들을 원래 규칙대로 재조립해 올바른 구조로 고쳐주는 공간 인지 훈련입니다. (자극 영역: 전두엽/공간 지각력)</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 예제:</strong>
+                                <p class="text-slate-700">로봇 화면에 올바른 정답 기준 배열(예: [ A ] - [ C ] - [ B ] 순서의 문자 결합 구조)이 예시 화면으로 출제됩니다. 이후 보미 로봇이 장난스러운 소리와 함께 블록 간의 연동 신호를 무작위로 꼬아 물리 블록들의 문자 순서를 엉망으로 섞어놓습니다. 사용자는 흐트러진 실제 블록들을 양손으로 잡고 자석 면을 떼어낸 뒤, 다시 화면에서 보았던 원본 순서 규칙([A] → [C] → [B])대로 물리적 위치와 결합 방향을 완벽하게 재조립하여 수정한 후 본체 화면의 [정답 확인]을 눌러 클리어합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'thinq',
+                title: '씽큐 테이블 (터치형 스마트상)',
+                icon: 'layout-grid',
+                content: `
+                    <h2>씽큐 테이블 상세 매뉴얼</h2>
+                    
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-3 text-blue-900">💡 [인지기능향상 멀티미디어 학습시스템 '씽큐테이블' 개요]</h3>
+                        <ul class="space-y-3 text-slate-700 bg-blue-50 p-6 rounded-lg border border-blue-100">
+                            <li><strong class="text-blue-800">정의:</strong> 어르신들의 스마트한 노후생활을 돕고 100세를 준비할 수 있도록 지원하는 놀이형 멀티미디어 학습시스템입니다.</li>
+                            <li><strong class="text-blue-800">목적:</strong> 시니어 사용자의 자존감 회복, 효과적인 여가활동 지원, 그리고 자기주도적 삶 형성을 목적으로 합니다.</li>
+                            <li><strong class="text-blue-800">하드웨어 특징:</strong> 49인치 대화면과 4K(3840×2160) 고해상도 디스플레이 스크린을 탑재하고 있으며, 사용자의 위치에 따라 화면을 180도 전환하여 편리하게 터치식으로 사용할 수 있습니다.</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="font-bold mb-4 text-slate-800">📋 [기능별 상세 설명 및 예제 가이드]</h3>
+                    <div class="space-y-6 mb-8">
+                        
+                        <!-- 1. 시니어 콘텐츠 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="brain" class="w-6 h-6 mr-2 text-blue-600"></i>1. 시니어 콘텐츠 (두뇌 스트레칭 인지향상 놀이)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 어르신들의 인지능력을 향상시키기 위해 게임 요소를 결합한 놀이형 두뇌 스트레칭 콘텐츠입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 및 조작 예제: 1인 또는 4인이 함께 인지향상 문제 풀기</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-2">
+                                    <li>씽큐테이블 메인화면에서 [시니어 콘텐츠] 앱을 손으로 터치합니다.</li>
+                                    <li>인원수 선택 화면에서 혼자서 플레이하는 '1 Player' 혹은 4인이 동시에 협동/경쟁하는 '4 Player'를 선택합니다.</li>
+                                    <li>화면을 손으로 밀어서 다양한 콘텐츠 목록을 탐색한 후, 원하는 콘텐츠 이미지를 터치하여 진입합니다.</li>
+                                    <li>콘텐츠 풀이가 시작되면 문제를 확인합니다 (예: 돌 화석 그림을 보고 연관된 형태나 일부분 모양 추리하기).</li>
+                                    <li>화면 양옆의 다이얼 부분을 터치하여 돌리면 색상이 변하는데, 알맞은 정답 색상을 맞춘 뒤 하단의 [정답 확인]을 터치합니다. 틀렸을 경우 [다시 도전]할 수 있습니다.</li>
+                                    <li>문제를 모두 완료하면 전체 채점 결과 진단 화면(막대그래프)이 나오며, 틀린 그래프를 터치하면 원래 문제로 이동해 복습할 수 있습니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 2. X-VPCT -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="activity" class="w-6 h-6 mr-2 text-green-600"></i>2. X-VPCT (인지사고력 테스트)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 사용자의 현재 인지사고력 수준을 정밀하게 측정하고 진단해 주는 테스트 전문 프로그램입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 및 조작 예제: 개인 정보 등록 및 인지 영역별 진단 결과 확인하기</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-2">
+                                    <li>메인화면에서 [X-VPCT 인지사고력 테스트] 메뉴를 터치합니다.</li>
+                                    <li>진입 후 원하는 난이도(Lev1 ~ Lev5 등)를 선택합니다.</li>
+                                    <li>맞춤형 진단 통계를 위해 제공되는 '개인 정보 등록화면'에서 사용자 정보를 입력합니다.</li>
+                                    <li>화면에 출제되는 인지사고력 테스트 문제를 순차적으로 풀이합니다.</li>
+                                    <li>완료 후 '영역별 진단 분석' 테스트 결과화면을 통해 인지적 영역(추상력, 주의력, 분석력, 사고와 판단력 등)과 창의적 영역(공간사고력, 구성력, 지각속도, 시지각적 통찰력 등)의 성취 점수를 그래프로 분석하여 확인합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 3. Cog Mate -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="check-circle-2" class="w-6 h-6 mr-2 text-indigo-600"></i>3. Cog Mate (경도인지장애 테스트)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> FDA 승인을 받은 에자이(Eisai)사의 경인도장애(경도인지장애) TEST 프로그램입니다. 전문적인 인지 건강 검사를 기기를 통해 간편하게 수행할 수 있도록 지원합니다.</p>
+                        </div>
+
+                        <!-- 4. 키오스크 체험 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="mouse-pointer-click" class="w-6 h-6 mr-2 text-orange-600"></i>4. 키오스크 체험</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 실생활에서 자주 접하는 무인 정보단말기(키오스크) 6가지의 사용법을 가상 환경에서 안전하게 체험하며 조작법을 배우는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 및 조작 예제: 실제와 동일한 구성의 은행 ATM기 체험하기</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-2">
+                                    <li>메인화면에서 [키오스크 체험] 아이콘을 터치합니다.</li>
+                                    <li>키오스크 선택화면에서 학습하고자 하는 기기 유형(영화관, ATM, 카페, 병원, 패스트푸드, 주민센터 등 6종) 중 [ATM]을 터치합니다.</li>
+                                    <li>화면에 은행 ATM기와 동일한 모의 화면이 표출되면 입금, 출금, 송금 등의 안내 단추를 단계별로 터치하며 체험합니다.</li>
+                                    <li>하단의 [홈으로] 아이콘을 누르면 키오스크 선택화면으로, [메인화면 이동]을 누르면 씽큐테이블 초기 홈 화면으로 되돌아갑니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 5. 건강체조 영상 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="music" class="w-6 h-6 mr-2 text-purple-600"></i>5. 건강체조 영상</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 관절에 무리가 가지 않는 선에서 어르신들이 영상을 보며 쉽게 동작을 따라 할 수 있는 맞춤형 건강 체조 콘텐츠입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 및 조작 예제: 영상을 보며 두뇌 스트레칭 체조 따라하기</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-2">
+                                    <li>메인화면에서 [건강체조 영상] 아이콘을 터치합니다.</li>
+                                    <li>건강체조 선택화면에서 원하는 주제의 운동 목록을 선택합니다.</li>
+                                    <li>화면에 체조 영상(예: '1. 환영 박수치기' 일뇌체조 및 두뇌 스트레칭 운동)이 재생되면, 화면 속 강사의 동작과 주의사항(Point)을 확인하며 다 함께 동작을 따라 합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 6. 지자체 소식 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="newspaper" class="w-6 h-6 mr-2 text-teal-600"></i>6. 지자체 소식 (디지털 사이니지 채널)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 디지털 사이니지 기능을 탑재하여, 해당 지자체에서 운영하는 각종 공지사항, 핫이슈, 홍보물 등을 어르신들에게 실시간으로 개시하고 전달하는 소통 채널입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 및 조작 예제: 지역 복지 정보 및 시정 활동 확인하기</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-2">
+                                    <li>메인화면에서 [지자체 소식] 아이콘을 터치합니다.</li>
+                                    <li>화면에 게시된 다양한 정책이나 핫이슈 소식(예: 고향사랑 기부제 안내, 백신 접종 안내, 안전예방 핫라인 운영 등)을 확인합니다.</li>
+                                    <li>화면 하단의 [자세히 보기] 단추나 영상/링크 바로가기 기능을 터치하여 상세 내용을 확인하고, 시정활동 참여 및 시니어 일자리 연계 등의 사회활동 계기를 마련할 수 있습니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 7. 문제풀이 방법 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="help-circle" class="w-6 h-6 mr-2 text-red-600"></i>7. ? 문제풀이 방법 (도우미 영상)</h4>
+                            <p class="text-slate-600 mb-4"><strong>설명:</strong> 기기 이용에 낯선 사용자를 위해 콘텐츠 문제를 어떻게 해결해야 하는지 규칙과 예시를 직관적인 영상으로 알려주는 기능입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 사용 및 조작 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li>메인 화면에서 [? 문제풀이 방법] 아이콘을 터치하면, 문제의 구성요소를 파악하고 형태 추리하여 올바르게 답을 도출하는 전 과정을 담은 예시 가이드 영상을 시청할 수 있습니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                `
+            },
+            {
+                id: 'happy',
+                title: '해피 태블릿 (멀티게임)',
+                icon: 'tablet-smartphone',
+                content: `
+                    <h2>해피 태블릿 상세 매뉴얼</h2>
+                    
+                    <div class="mb-8">
+                        <h3 class="font-bold mb-3 text-blue-900">💡 [해피태블릿(HAPPY TABLET) 개요]</h3>
+                        <ul class="space-y-3 text-slate-700 bg-blue-50 p-6 rounded-lg border border-blue-100">
+                            <li><strong class="text-blue-800">정의:</strong> 시니어 사용자들의 인지력 향상 및 두뇌 자극을 목적으로 개발된 멀티게임 소프트웨어 솔루션입니다.</li>
+                            <li><strong class="text-blue-800">구성:</strong> 혼자서 집중적으로 뇌 영역을 훈련하는 싱글 게임(12종)과 다른 사용자들과 실시간 대결을 펼치며 교류하는 멀티 게임(3종)으로 나뉩니다.</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="font-bold mb-4 text-slate-800">📋 [기능별 상세 설명 및 예제 가이드]</h3>
+                    
+                    <div class="mb-8 border-b-2 border-slate-300 pb-4">
+                        <h4 class="font-bold text-slate-800 flex items-center"><i data-lucide="user" class="w-6 h-6 mr-2 text-blue-600"></i> PART 1. 싱글 게임 (개인 맞춤형 인지 훈련 12종)</h4>
+                    </div>
+                    
+                    <div class="space-y-6 mb-8">
+                        <!-- 1. 그림 짝 맞추기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="copy" class="w-5 h-5 mr-2 text-blue-600"></i>1. 그림 짝 맞추기 (기억력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 카드들의 원래 모양과 뒤집힌 위치를 단기 기억했다가 제한시간 내에 동일한 그림의 짝을 찾아 매칭하는 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(카드 4장)부터 5단계(카드 28장)까지 총 5가지 단계 중 선택할 수 있으며, 전체 제한 시간은 5분입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>게임이 시작되면 화면에 10초 동안 모든 카드의 앞면 그림을 먼저 보여준 뒤, 카드가 일제히 뒤집어집니다.</li>
+                                    <li>임의의 문제 카드를 하나 터치하여 그림을 확인한 뒤, 기억을 되살려 이와 똑같은 그림이 숨겨진 다른 카드를 찾아 터치합니다.</li>
+                                    <li>동일한 짝을 맞추면 화면에 "O" 표시가 뜨며 카드가 고정되고 맞춘 짝 개수가 1개 올라갑니다. 틀리면 "X" 표시 후 카드가 다시 원상태로 뒤집어집니다.</li>
+                                    <li>위치가 도저히 기억나지 않을 때는 하단의 [힌트 보기] 버튼을 누르면 5초간 모든 카드의 앞면을 재개방해 줍니다 (판당 최대 3회 지원).</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 2. 국화빵 팔기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="grid" class="w-5 h-5 mr-2 text-blue-600"></i>2. 국화빵 팔기 (기억력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 순간적으로 나타났다가 사라지는 국화빵들의 격자판 내 좌표를 기억해 내어 순서대로 찾아내는 위치 기억 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(3X3 격자, 타일 9개)부터 4단계(6X6 격자, 타일 36개)까지 4단계로 운영되며, 제한 시간은 5분입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>게임 화면에 포장마차 캐릭터가 등장하여 이번 라운드에서 찾아야 할 타깃 국화빵 개수를 말풍선으로 표시합니다 (예: 8개).</li>
+                                    <li>회색 국화빵 틀 타일 중 랜덤한 위치에 빨간색 국화빵들이 3초간 반짝 나타났다가 판이 뒤집어지며 일제히 숨겨집니다.</li>
+                                    <li>방금 전 빨간 국화빵이 구워졌던 타일 위치들을 기억해 내어 손가락으로 해당 타일들을 하나씩 터치하여 찾아냅니다.</li>
+                                    <li>지정된 개수의 국화빵 위치를 오답 없이 완벽히 찾아내면 점수와 함께 '맞춘 문제 수' 수치가 상승합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 3. 두더지 잡기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="hammer" class="w-5 h-5 mr-2 text-blue-600"></i>3. 두더지 잡기 (반응력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 구멍에서 무작위로 고개를 내미는 두더지들을 보고 시각 인지 및 순발력을 발휘하여 빠르게 터치해 타격하는 반응력 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(일반+황금), 2단계(일반+황금+방해 두더지), 3단계(출현 속도가 대폭 빨라진 최고 난이도)로 구분되며 제한 시간은 3분입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>구멍에서 두더지가 튀어나오면 들어가지 전에 손가락으로 신속하게 터치합니다. 일반 두더지 타격 성공 시 1마리당 +1점을 획득합니다.</li>
+                                    <li>별 선글라스를 끼고 나오는 황금 두더지를 타이밍에 맞추어 명중시키면 보너스 점수 +5점을 얻습니다.</li>
+                                    <li>해골 마크 군모를 쓴 검은색/흰색 방해물 두더지를 실수로 건드리면 점수가 -5점 감점되므로 육안으로 빠르게 식별하여 피해야 합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 4. 텃밭을 지켜줘 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="shield" class="w-5 h-5 mr-2 text-blue-600"></i>4. 텃밭을 지켜줘 (반응력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 텃밭을 망치기 위해 상단에서 굴러내려 오는 두더지굴을 좌우 이동 제어를 통해 몸으로 직접 육탄 방어해 내는 디펜스 액션 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1~2단계(기본 두더지만 등장)부터 5단계(두더지 속도 가속화 및 방해물 2개 배치)까지 5단계 구성이며, 3분 동안 성벽(텃밭)을 사수해야 합니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>화면 상단의 두더지굴 구멍에서 갈색 두더지 뭉치(두더지굴)가 아래 방향으로 천천히 전진해 내려옵니다.</li>
+                                    <li>하단에 정렬된 5개의 '텃밭 버튼' 영역을 터치하여, 텃밭 수호 캐릭터(붉은 꽃게 모양)를 해당 열로 좌우로 이동시킵니다.</li>
+                                    <li>두더지가 텃밭 라인 경계선에 닿기 직전 캐릭터로 길목을 가로막아 수비에 성공하면 회당 +10점의 높은 점수를 획득합니다.</li>
+                                    <li>(방해요소 유의): 중간에 통나무 더미나 농기구 수레 등 방해물이 놓여 있는 난이도에서는 내려오던 두더지굴이 방해물과 접촉 시 진행 경로가 예상치 못한 방향으로 튕기거나 굴절되므로 낙하지점을 기민하게 계산해야 합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 5. 리본 이어 붙이기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="scissors" class="w-5 h-5 mr-2 text-blue-600"></i>5. 리본 이어 붙이기 (지각력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 절단된 문제 리본의 단면 굴곡 기하학적 형태를 시각적으로 정밀 파악하고, 직관적으로 정확히 맞아떨어질 결합 조각을 찾아내는 퍼즐형 지각 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(단순 직선/곡선 단면), 2단계(홈 1개 추가), 3단계(홈 2개 추가 복잡 패턴)로 이뤄지며 제한 시간은 3분입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>상단 화면에 롤에서 풀려나와 끝이 잘린 붉은색 '문제 리본' 형태가 제시되고, 하단에 리본 조각 4개의 예시 보기가 출력됩니다.</li>
+                                    <li>잘린 문제 리본의 오른쪽 단면 음각/양각 형태와 테트리스처럼 빈틈없이 합체될 수 있는 올바른 짝을 하단 4개 보기 중에서 골라 터치합니다.</li>
+                                    <li>완벽한 짝을 맞추면 리본이 부드럽게 결합 연출되며 +1점을 따내고 다음 문항으로 전개됩니다. 오답을 고르면 선택한 조각이 제자리에서 지워지고 새로운 리본 보기가 리프레시되어 다시 풀 수 있도록 기회를 줍니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 6. 어디로 헤엄칠까 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="navigation" class="w-5 h-5 mr-2 text-blue-600"></i>6. 어디로 헤엄칠까 (지각력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 순차적으로 나열된 화살표 기호 리스트의 좌표 벡터 방향을 머릿속으로 시뮬레이션 조합하여, 튜브를 탄 캐릭터가 다다를 최종 목적지를 미리 조망하여 맞추는 공간 지각 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(화살표 2개, 단순 4방향)부터 5단계(화살표 4개, 대각선 및 굴절 경로 포함)까지 있으며, 전체 타이머는 5분입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>스크린 상단에 왼쪽에서 오른쪽(→) 순서대로 명령 화살표가 2~4개 주어집니다 (예: [↑], [↖], [←]).</li>
+                                    <li>수영장 정중앙의 출발 그리드에 대기 중인 파란 머리 캐릭터를 기준으로 삼아, 상단 화살표 지시 순서 그대로 눈을 움직여 최종 도달 타일을 머릿속으로 찾아갑니다.</li>
+                                    <li>이동 연산이 끝났다면 수영장 타일 위에 투명하게 활성화된 32개의 '원형 위치 버튼' 중 최종 안착지라고 판단되는 버튼 하나를 꾹 터치합니다.</li>
+                                    <li>정답일 경우 캐릭터가 물보라를 일으키며 해당 위치까지 직접 수영해 이동하고 +10점을 획득합니다. 오답일 때는 캐릭터가 반응하지 않고 정지한 상태에서 새로운 화살표 조합이 상단에 갱신됩니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 7. 청기백기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="flag" class="w-5 h-5 mr-2 text-blue-600"></i>7. 청기백기 (언어력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 무작위 조건 청각 명령어 청취 후 지체 없이 청기와 백기의 상/하 제어 스위치를 누르는 전형적인 순발력 조건 판단 언어 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(올려, 올리지 마 단순형)부터 3단계(둘 다 내리지 마 등 복잡 꼬임형 명령어)까지 구성되며, 총 30문항 세트로 진행됩니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>기기 스피커에서 고음질의 청각 명령어(예: "청기 올리지 말고, 백기 올려!")가 카운트다운과 함께 송출됩니다.</li>
+                                    <li>사용자는 3초의 극히 짧은 제한시간 이내에 화면 좌측(청기 제어 화살표) 영역과 우측(백기 제어 화살표) 영역의 위/아래 단추를 조합하여 터치합니다.</li>
+                                    <li>누른 동작 내역은 화면 좌측 빈 슬롯에 타임라인 데이터로 실시간 마킹되며, 잘못 입력한 조작은 하단 [X] 단추를 눌러 즉시 삭제 수정할 수 있습니다.</li>
+                                    <li>3초 타이머 바가 바닥나면 최종 제출 처리되며 정답일 시 훈련 꼬마 캐릭터가 만세를 부르며 맞춘 문제 개수가 1개 상승합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 8. 단어 관람차 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="circle-dashed" class="w-5 h-5 mr-2 text-blue-600"></i>8. 단어 관람차 (언어력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 뱅글뱅글 돌아가는 유원지 관람차에 매달린 글자 자소들을 시각 인지하여 단어 구조에 맞게 순차적으로 드래그 조립하는 텍스트 연상 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(글자 수 3개 단어, 라이프 2개)부터 4단계(글자 수 6개 고급 어휘 단어, 라이프 5개, 텍스트 암막 가림막 효과 작동)까지 제공되며 3분의 제한시간이 흐릅니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>화면에 대형 대관람차 기구가 우측 방향으로 서서히 로테이션 주행하며, 각 객차 캡슐마다 글자가 한 자씩 표기됩니다 (예: '유', '끼', '느', '다').</li>
+                                    <li>연상되는 온전한 낱말(예: '느끼다')이 되도록 해당 글자 객차를 손가락으로 꾹 눌러 하단 정답 영역 빈칸 매트 안으로 순서대로 하나씩 드래그하여 끌어다 놓습니다.</li>
+                                    <li>올바른 정답 단어 음절을 하나 도킹시킬 때마다 실시간으로 +1점을 추가 확보합니다.</li>
+                                    <li>엉뚱한 결합으로 오답을 입력하면 좌측 상단의 빨간 풍선(라이프)이 1개 펑 터지며 정답 힌트 한 글자를 알려줍니다. 풍선이 전부 다 소진되면 전체 점수에서 -1점이 삭감되고, 화면에 "관람차 재정비 중"이라는 비상 배너가 출력되며 5초 동안 모든 조작이 강제 동결되므로 감점을 주의해야 합니다.</li>
+                                    <li>(심화 요소): 난이도 2단계부터는 일정 궤도를 돌면 객차의 글자들이 물음표나 블라인드로 가려지는 방해요소가 발동되므로, 최초 관람차 진입 시 눈에 띄는 글자 좌표들을 미리 속사로 암기해야 수월합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 9. 병아리 세기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="plus-circle" class="w-5 h-5 mr-2 text-blue-600"></i>9. 병아리 세기 (수리력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 둥지에 들어앉은 암탉의 품 안을 빠르게 기어 들어갔다 기어 나오는 병아리 마릿수를 트래킹하여 덧셈/뺄셈 연산으로 최종 개수를 도출하는 연산 수리 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(품속으로 진입하는 병아리만 존재 [+]), 2단계(진입 후 다시 탈출하는 병아리 발생 [-]), 3단계(동시 다발적으로 진입 및 이탈 복합 구성 [+, -])로 전개되며 3분의 제한시간이 배정됩니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>중앙의 하얀 암탉 캐릭터의 꼬리, 날개, 밑단 방향에서 노란색 아기 병아리들이 쫑쫑 걸어 나와 닭 품속으로 들어가 안 보입니다. 사용자는 집중해서 눈으로 병아리 가감 유출입 동향을 셉니다.</li>
+                                    <li>출현 시퀀스가 종료되면 하단 제어판에 알모양 숫자 카운터와 함께 [+](더하기), [-](빼기) 버튼이 활성화됩니다.</li>
+                                    <li>버튼을 조작하여 머릿속으로 계산해 둔 최종 병아리 잔여 수량(예: 7마리)을 입력창에 정확히 맞춘 후, 우측의 빨간색 [입력 완료] 큰 단추를 클릭합니다 (주어진 라운드 풀이 시간 1분이 지나면 당시 입력된 숫자로 자동 강제 전송됨).</li>
+                                    <li>제출과 동시에 어미 닭이 깜짝 놀라 날개짓하며 화면 오른쪽으로 날아가고, 둥지 바닥에 남아 삐약거리는 실제 병아리 수 정답이 투명하게 정산 공개됩니다. 정답 일치 시 +1점이 지표에 반영됩니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 10. 숫자 접시 가져오기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="calculator" class="w-5 h-5 mr-2 text-blue-600"></i>10. 숫자 접시 가져오기 (수리력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 회전식 콘베이어 벨트를 타고 끝없이 굴러가는 숫자 접시의 사칙연산 문제를 스캔하여 계산기로 정답 단추를 입력해 낚아채는 연산 속도 훈련 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(한 자리 수의 단순 덧/뺄셈)부터 3단계(한/두 자리 혼합 가감승제 덧셈·뺄셈·곱셈·나눗셈 종합 연산)까지 지원되며 타임아웃 제한 시간은 3분입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>상단 회전 레일 가이드에 수식 텍스트(예: '15 - 6', '4 + 9')가 또렷하게 인쇄된 사기그릇 접시들이 최대 10개까지 대열을 맞춰 순환 회전합니다.</li>
+                                    <li>회전하는 접시 중 마음에 드는 연산 문제 접시를 타깃으로 낙점하고 신속히 암산합니다 (예: '15 - 6 = 9').</li>
+                                    <li>하단 중앙의 가상 디지털 계산기 물리 키패드(1~0) 단추를 터치하여 연산 정답 스칼라 값(9)을 기재합니다. 글자를 오타 냈을 땐 좌측 분홍색 [삭제] 단추를 누르면 지워집니다.</li>
+                                    <li>정답 수치가 세팅된 것을 확인한 뒤 우측 하단 빨간색 [입력] 버튼을 확실하게 눌러 예제를 마감합니다.</li>
+                                    <li>정답인 경우: 회전하던 해당 문제 접시 테두리에 반짝이 이펙트가 일어나며 내 개인 접시 적재함으로 쏙 연출 이송 처리되고 점수가 증가합니다. (점수 획득 기준은 난이도 단계별 비례: 1단계 1점, 2단계 2점, 3단계 3점 지급).</li>
+                                    <li>오답인 경우: 현재 레일 위에 전혀 존재하지 않는 임의의 황당한 정답 값을 기재해 전송하면, 디지털 계산기 액정에 붉은색 자막으로 'ERROR' 경고가 대문짝만하게 점멸 표출되며 연산에 실패하게 됩니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 11. 다함께 분리수거 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="trash-2" class="w-5 h-5 mr-2 text-blue-600"></i>11. 다함께 분리수거 (판단력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 무작위 쓰레기 기호 중 하단에 출현하는 환경 자원 수거함 종류에 부합하는 타깃만 정확하게 낚아채 골라내는 상황 판단력 기반 분류 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(분류 쓰레기 보기 4개, 일반 표준 재활용품 구성), 2단계(분류 쓰레기 보기 6개, 재활용 불가능한 일반 쓰레기 및 음식물 오브젝트가 결합한 교란 패턴)로 코스가 구성되며 제한 시간은 1분 혹은 1분 30초입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>기기 디스플레이 한복판에 원형 궤도를 그리며 음료수 빈 캔, 주스 유리병, 종이 골판지 박스 등 각종 폐기물 일러스트 아이콘들이 반시계 방향으로 서서히 공전 회전합니다.</li>
+                                    <li>하단 쓰레기통 입구 수거함 박 가이드에 특정 분리수거 명칭 표지판이 랜덤하게 활성화됩니다 (예: '종이', '유리').</li>
+                                    <li>현재 수거함 이름(예: '유리')에 호응하는 적합한 회전 오브젝트(예: 사이다 초록색 유리병)를 시각적으로 빠르게 검출하여 손가락으로 붙잡고 하단 붉은색 수거함 통 내부 구멍 공간 안으로 드래그하여 드롭(투척) 시킵니다.</li>
+                                    <li>올바른 매칭 투하로 정답 처리가 되면 쓰레기 분류 처리를 처리한 순발력 속도 게이지에 비례하여 미세하게 산정된 판정 점수가 가중 부여됩니다 (최소 1점부터 초고속 분류 시 최고 10점 한도 배정). 다음 문항으로 래핑되며 하단 수거함의 자원 카테고리 속성이 동적으로 자동 리셋됩니다.</li>
+                                    <li>만약 캔이나 종이를 유리 수거함에 던져 넣는 오답 분류를 하면 불합격 소리와 함께 해당 쓰레기 그림이 튕겨 나와 원래 돌던 원형 공전 자전 궤도로 자석처럼 복귀해 버립니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <!-- 12. 소리 연결하기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="volume-2" class="w-5 h-5 mr-2 text-blue-600"></i>12. 소리 연결하기 (판단력 훈련)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 복수의 사물 동전들이 차례로 출력하는 고유 사운드 효과음의 선후 인과 관계 순서 시퀀스를 정밀하게 청취 청각 기억한 후, 올바른 인덱스 순서대로 역추적하여 조립하는 청각 지각 판단력 게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>난이도 선택:</strong> 1단계(출제 소리 동전 수 2개), 2단계(소리 동전 수 3개), 3단계(최대 고난도 소리 동전 수 4개 중복 결합)로 편제되어 있으며 전체 제한 타이머는 5분입니다.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ol class="list-decimal ml-5 text-slate-700 space-y-1">
+                                    <li>칠판 테이블 보드 위에 특유의 삽화가 입혀진 대형 금속 주화 문제 동전(귀뚜라미 문양, 생쥐 문양, 옛날 다이얼 전화기 문양, 파도 물소리 문양 등)들이 넓게 분산 배치됩니다.</li>
+                                    <li>시스템에서 "각 동전 소리를 기억해 주세요" 멘트와 함께, 배치된 동전 하나하나가 순차적으로 점멸 하이라이트 발광하며 매칭된 리얼 동물/사물 효과음(예: 찌르르 귀뚜라미 소리, 따르릉 전화 벨소리)을 시연 송출합니다.</li>
+                                    <li>사전 시연이 완수되면, 시스템이 이 효과음들의 순서를 마구 뒤섞어 콤보 묶음으로 스피커를 통해 들려줍니다 (예: 1번째로 '전화기 벨소리' -> 2번째로 '귀뚜라미 소리' -> 3번째로 '생쥐 찍찍 소리' 출력).</li>
+                                    <li>소리 출력이 끝나면 사용자는 청각 기억을 복원하여 방금 들은 콤보 오디오 순서 그대로 하단 정답 벨트 위의 실제 은화 동전 그래픽들을 차례차례 터치합니다.</li>
+                                    <li>동전을 터치하면 누른 역사적 흐름에 맞춰 동전 알맹이 정중앙에 '1', '2', '3' 이라는 물리적 조작 순서 인덱스 자막 번호가 찍히며 마킹됩니다 (한 번 누른 터치 인덱스는 부분 교정 및 무르기가 차단되므로 심사숙고해야 합니다).</li>
+                                    <li>최종 정산 시스템이 개입하여 정답 순서열과 비교 분석을 실행하며, 정확한 자리에 올바른 소리 동전을 명중시킨 건수마다 동전 한 개당 +1점씩 점수 보상을 인색하지 않게 정산 지급합니다.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 border-b-2 border-slate-300 pb-4">
+                        <h4 class="font-bold text-slate-800 flex items-center"><i data-lucide="users" class="w-6 h-6 mr-2 text-indigo-600"></i> PART 2. 멀티 게임 (네트워크 기반 2인 이상 대결형 3종)</h4>
+                    </div>
+
+                    <div class="space-y-6 mb-8">
+                        <!-- 1. 온라인 맞고놀이 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2 text-indigo-600"></i>1. 온라인 맞고놀이 (Go-Stop 대전)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 대한민국 시니어 계층에게 익숙한 정통 화투 맞고의 룰과 연출을 완벽하게 모바일 네트워크 환경으로 이식하여 타 사용자와 점수내기 경쟁을 벌이는 멀티플레이어 보드게임 채널입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>진행 요령:</strong> 평균 15분~20분 소요.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>룸 입장 및 매칭 단계:</strong> 사용자 인적 사항 등록 선택창에서 현재 로그인 중인 자신의 닉네임 프로필(예: 방문자 1) 버튼을 터치해 방에 입장한 뒤 대기합니다. 시스템이 '친구를 찾는 중' 이라는 네트워크 로딩 바를 띄우며 15초의 제한시간 동안 매칭 상대를 서칭합니다. 제한시간 내에 상대가 조인하면 '친구찾기 성공' 팝업과 함께 3초 후 대국실이 즉시 오픈됩니다 (실패 시 다시하기를 눌러 재시도 가능).</li>
+                                    <li><strong>패 분배 및 선 결정:</strong> 인공지능 호스트가 난수 알고리즘을 가동하여 선(First attack 선공) 유저를 랜덤하게 추첨해 지정한 후, 양측 사용자 손패 매트 위로 각각 화투패를 10장씩 공평하게 자동 배포 분할합니다.</li>
+                                    <li><strong>화투패 착수 및 가이드:</strong> 본인의 턴이 돌아와 시간 제한 바가 차오르면, 현재 내 10장의 패 중 바닥에 깔린 화투 더미와 일치하는 같은 달(월)의 화투패를 골라 터치해 바닥에 출하 착수시킵니다. 이때 초보 및 약시 시니어를 위한 편의 기능으로, 바닥패와 매칭이 가능한 유효 적합 손패 상단 영역에 파란색 및 회색 안내용 화살표 표식을 UI 상에 띄워 주므로 편하게 조작할 수 있습니다.</li>
+                                    <li><strong>고/스톱 권한 행사 및 엔딩:</strong> 화투판을 진행하다가 먹은 패 점수의 합산 가치가 먼저 '7점' 기준선에 도달한 사용자가 탄생하는 순간, 화면 중앙에 웅장한 목조 고 단추와 스톱 아이콘 팝업이 활성화되며 권한 행사를 독촉합니다. 한쪽이 과감하게 '스톱'을 누르거나, 스톱이 없는 상태에서 양측 유저의 손패 10장이 전량 제로(0)로 바닥나 소진되면 대국이 공식 종료됩니다.</li>
+                                    <li><strong>통계 결과 창 대조:</strong> 대국 엔딩과 동시에 스크린 전체에 '승리' 혹은 '패배' 엠블럼이 박히며, 플레이어가 최종 획득한 고스톱 점수 수치(예: 총 140점 획득), 게임 머니 판정 결과, 그리고 이번 라운드를 치열하게 전개한 정밀 '놀이한 시간' 로그가 일목요연하게 표출되므로 확인 후 마감 단추를 누르면 퇴장 처리됩니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 2. 온라인 오목두기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="grid" class="w-5 h-5 mr-2 text-indigo-600"></i>2. 온라인 오목두기 (오목 대전)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 가로, 세로, 대각선 격자선 방향을 불문하고 바둑판 교차점 위에 자신의 바둑돌을 빈틈없이 연속해서 일렬로 정확히 5개를 늘어세우는 유저가 다이렉트로 판정승을 거두는 전통 대결형 멀티 보드게임입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>진행 요령:</strong> 평균 15분~20분 소요.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li>맞고 채널과 일치하는 매칭 서칭 가이드라인을 거쳐 대국실 바둑판 매트에 입장하면 시스템이 흑돌/백돌 진영을 매칭 완료해 줍니다.</li>
+                                    <li>오목 정통 법식에 의거하여 흑돌(Black) 진영을 배정받은 사용자부터 선공으로 낙점되어 첫 단추 턴을 개시하며, 한 수당 주어지는 생각 제한시간 타이머는 차례 당 딱 30초입니다.</li>
+                                    <li>나무 바둑판 격자 줄 교차점 공간 중 원하는 좌표를 손가락으로 가볍게 터치하면, 오조작 방지를 위해 해당 자리에 파란색 가상 돌 허상 가이드가 마킹되어 표출됩니다. 착수 위치가 타당하다고 판단되면 내 프로필 명패 하단에 위치한 사각형 회색 [완료] 확정 버튼을 눌러 돌을 완전히 바둑판 위에 안착 고정시킵니다. 만약 장고를 거듭하다 30초 타임아웃 제한 시간을 초과해 넘겨버리면, 빈 바둑판 격자점 좌표 중 시스템이 연산한 임의의 무작위 빈자리에 돌이 강제로 착수되어 상대에게 턴이 강제 패스되니 타이머 관리에 주의해야 합니다.</li>
+                                    <li><strong>(특수 로컬 룰):</strong> 해피태블릿 오목 엔진은 시니어 친화 오락 목적이 강하므로 흑돌의 3-3(쌍삼)이나 4-4 착수를 시스템 제어로 전면 금지하거나 규제하지 않으므로 자유롭게 공격 전술을 구사할 수 있습니다. 다만 돌을 6개 이상 일렬로 길게 엮어버리는 '육목 이상의 장목' 행마는 바둑판에 둘 수는 있지만, 최종 오목 합격 승리 마크 조건 스케줄러에는 포함되지 않으므로 무조건 딱 정밀한 '5목'을 완성하도록 정위치 타격에 집중해야 합니다.</li>
+                                    <li>한쪽이 철벽 방어를 뚫고 일렬 5목 정렬 레이아웃을 성공하는 찰나 게임 엔진이 휘슬을 울리며 라운드가 공식 종료됩니다. 승리한 대국자 닉네임 우측 상단 지표에 황금빛 '1등 왕관 훈장 메달 아이콘'이 새겨지며 승패 결과지 및 총 대국 시간 리포트가 오버레이 팝업으로 표출됩니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 3. 온라인 장기두기 -->
+                        <div class="border-2 border-slate-200 p-5 rounded-xl bg-white shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2 flex items-center"><i data-lucide="sword" class="w-5 h-5 mr-2 text-indigo-600"></i>3. 온라인 장기두기 (장기 대전)</h4>
+                            <p class="text-slate-600 mb-2"><strong>설명:</strong> 대한민국 표준 장기 협회 규격 표준 룰셋을 기반으로 코딩된 디지털 전략 보드게임 채널로, 한나라/초나라 진영의 고유 장기 기물(차, 포, 마, 상, 사, 졸/병)들을 정해진 궤도 법칙대로 제어 행마 하여 상대방 최고의 총사령관 왕인 '궁'을 외통수로 고립시켜 사살포획하면 승리하는 고난도 전략 퍼즐 멀티 콘텐츠입니다.</p>
+                            <p class="text-slate-600 mb-4"><strong>진행 요령:</strong> 평균 15분~20분 소요.</p>
+                            <div class="bg-slate-50 p-4 rounded border border-slate-100">
+                                <strong class="text-slate-800 block mb-2">▶ 진행 및 조작 예제:</strong>
+                                <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                    <li><strong>맞춤식 상차림 선택 단계:</strong> 매칭 하이웨이를 통과해 장기판 배틀 필드방에 들어서면, 본격 대국 스위치를 올리기 직전 화면 하단에 30초 카운트다운 타이머와 함께 4가지 기본 포진 선택창이 팝업됩니다. 사용자는 자신의 장기 기풍과 전략 시나리오에 걸맞은 상차림 유형(마상상마, 상마마상, 마상마상, 상마상마 등 귀마/원앙마/면상 커스텀 배치) 중 하나를 마우스 터치로 신속히 선택한 후 빨간색 [놀이 시작] 승인 단추를 터치합니다 (30초 동안 초조하게 고민하다 기권하거나 시간 초과 시 시스템이 디폴트로 세팅해 놓은 자동 기본형 포진 상차림으로 대국이 반강제 강제 개시됩니다).</li>
+                                    <li><strong>보정 기본 기물 점수 부가 규칙:</strong> 한국 표준 민속 장기 철칙 중 하나인 '한나라 후공 보정 점수(비김수 방지용 1.5점)' 규정이 기계적으로 반영됩니다. 대국 시작선에서 양 진영의 스코어보드 기물 점수가 푸른색 초나라 진영은 선공 권한 부여와 함께 순수 기물 점수 총합인 '72점', 붉은색 한나라 진영은 후공 핸디캡 보정 1.5점이 산입된 '73.5점'으로 차등 마킹된 상태에서 초나라의 첫 한 수 착수로 장기판이 열립니다.</li>
+                                    <li><strong>기물 터치 조작 및 한 턴 제한시간:</strong> 판 위에 일렬 배치된 내 아군 장기 말 중 하나(예: 차 [車])를 손가락으로 가볍게 터치 클릭하면, 장기판 내 격자선 위로 해당 말이 법도상 진격 또는 후퇴할 수 있는 모든 유효 이동 가능 좌표 칸들마다 푸른색 점 및 화살표 안내 가이드 아이콘이 친절하게 불을 밝힙니다. 그중 전략상 적합한 타깃 목적지 좌표를 지정해 터치하면 장기 말이 해당 칸으로 스르륵 전술 이동을 완료하며 상대에게 턴을 양도합니다 (한 턴당 작전 구상 제한시간은 30초이며, 30초 내에 아무 조작도 안 하고 패스하면 내 귀중한 주력 기물 중 하나가 무작위 인공지능 연산에 의해 엉뚱한 곳으로 강제 자동 행마 처리되므로 신속히 터치해야 합니다).</li>
+                                    <li><strong>행마 제약 프로토콜 및 장군 신호탄:</strong> 대국 도중 바둑판을 오가며 동일한 형태의 악의적 장기 말 반복 전술 행마(예: 차를 올렸다 내렸다 무한 반복하는 행위)를 연속 3회 이상 단행하면 시스템이 트롤링 반칙으로 규정하여 3회 이상 반복수를 원천 금지 차단시킵니다. 만약 내 행마의 결과로 인해 다음 차례 턴에 상대방의 우두머리 '궁(왕)' 기물을 무조건 직격 체포할 수 있는 킬각(체크메이트 외통 전 단계)이 완성되면, 장기판 정중앙에 붉은색 대형 자막으로 "장군"이라는 경고 경보 이펙트 레이아웃이 실시간 점멸 마킹되어 양 대국자에게 시각적으로 통보해 줍니다.</li>
+                                    <li><strong>적장 포획 및 기물 점수 스코어 정산:</strong> 내 장기 말의 전진 궤적 상에 위치한 적군의 말(예: 상대방 포 [包])을 덮쳐 잡아내면, 해당 적군 기물 그래픽이 장기판에서 증발하여 화면 양옆 스크린 레이아웃 영역에 구비된 '잡은 말 정보 보관함 상자' 슬롯으로 정렬 수집됩니다. 기물을 손실당한 유저는 대한민국 표준 장기 점수 가치 규정(차 13점, 포 7점, 마 5점, 상 및 사 3점, 졸 및 병 2점) 계산식 가중치 수치에 의거해 실시간으로 내 프로필 점수 계기판에서 해당 점수만큼이 뚝 깎여 차감 실점 처리되므로 실시간 기물 점수 밸런스를 육안으로 검증할 수 있습니다.</li>
+                                    <li><strong>대국 엔딩 및 판정승 조건문:</strong> 기포와 차를 활용해 상대방 궁의 사방 도망 길을 완전히 차단하는 완벽한 '외통수' 작전을 성공하여 상대 왕을 먼저 생포 포획해 내는 순간 장기 대국은 내 승리로 공식 클리어 마감됩니다. 만약 양 유저 모두 수비 위주의 신중한 철벽 방어 장고 대국을 펼치느라 장기판 우측 상단에 카운트되는 전체 장기 제한 수인 '200수(200/200)' 제한 한도를 모두 소진해 채울 때까지도 상대 왕을 잡지 못했을 경우, 시스템이 대국 강제 중지 명령을 발동합니다. 그 중단 시점에 양측 스코어보드 전광판에 남겨진 '최종 기물 잔여 점수(예: 한나라 49.5점 vs 초나라 52점)' 수치 기록을 하드웨어 호스트가 상호 크로스 대조 연산하여 단 0.5점이라도 점수가 더 높은 진영 유저에게 판정승 승리 왕관 마크를 부여하고 게임을 엄격하게 결산 종료합니다.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            }
+        ];
+
+        const menuList = document.getElementById('menuList');
+        const contentArea = document.getElementById('contentArea');
+        const desktopSearch = document.getElementById('desktopSearch');
+        const mobileSearch = document.getElementById('mobileSearch');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggleBtnOuter = document.getElementById('sidebarToggleBtnOuter');
+        const sidebarToggleBtnDesktop = document.getElementById('sidebarToggleBtnDesktop');
+        const fontScaleDisplay = document.getElementById('fontScaleDisplay');
+
+        // 아이콘 렌더링 함수 초기화 용도
+        function renderIcons() {
+            lucide.createIcons();
+        }
+
+        // 검색 네비게이터용 전역 변수
+        let highlights = [];
+        let currentHighlightIndex = -1;
+
+        // 검색어 하이라이트 처리를 위한 도우미 함수 (HTML 태그 내부 속성 보호)
+        function highlightText(html, keyword) {
+            if (!keyword.trim()) return html;
+            // 정규식 특수문자 이스케이프
+            const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            // HTML 태그(<...>) 내부가 아닌 텍스트만 매칭
+            const regex = new RegExp("(?![^<]*>)(" + escapedKeyword + ")", "gi");
+            // 검색어를 <mark> 태그로 감싸 시각적 강조
+            return html.replace(regex, "<mark class='search-highlight bg-yellow-300 text-slate-900 px-1 rounded shadow-sm'>$1</mark>");
+        }
+
+        // 메뉴 렌더링 함수 (검색어 파라미터 추가)
+        function renderMenu(dataToRender, keyword = '') {
+            menuList.innerHTML = ''; // 메뉴 비우기
+            
+            if (dataToRender.length === 0) {
+                menuList.innerHTML = '<p class="text-center text-slate-500 mt-10">검색 결과가 없습니다.</p>';
+                return;
+            }
+
+            // '기기 세팅 방법', '기기 정리 방법'이 항상 위에 오도록 정렬
+            const sortedData = dataToRender.sort((a, b) => {
+                if (a.id === 'setup') return -1;
+                if (b.id === 'setup') return 1;
+                if (a.id === 'cleanup') return -1;
+                if (b.id === 'cleanup') return 1;
+                return 0;
+            });
+
+            sortedData.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 mb-2 rounded-xl flex items-center font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-transparent hover:border-blue-100';
+                btn.innerHTML = `
+                    <i data-lucide="${item.icon}" class="w-6 h-6 mr-3 text-slate-400"></i> 
+                    <span class="text-lg">${item.title}</span>
+                `;
+                btn.onclick = () => {
+                    // 활성화 스타일 적용
+                    document.querySelectorAll('#menuList button').forEach(b => {
+                        b.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-200');
+                        // Lucide가 i 태그를 svg로 렌더링하므로, 둘 다 잡을 수 있게 수정
+                        const icon = b.querySelector('svg, i');
+                        if (icon) {
+                            icon.classList.remove('text-blue-600');
+                            icon.classList.add('text-slate-400');
+                        }
+                    });
+                    btn.classList.add('bg-blue-100', 'text-blue-800', 'border-blue-200');
+                    const activeIcon = btn.querySelector('svg, i');
+                    if (activeIcon) {
+                        activeIcon.classList.remove('text-slate-400');
+                        activeIcon.classList.add('text-blue-600');
+                    }
+                    
+                    showContent(item, keyword);
+                };
+                menuList.appendChild(btn);
+            });
+            renderIcons();
+        }
+
+        // 본문 내용 보여주는 함수 (검색어 하이라이트 및 자동 스크롤 적용)
+        function showContent(item, keyword = '') {
+            let contentHtml = item.content;
+            
+            // 검색어가 있을 경우 본문 내 텍스트 하이라이트 적용
+            if (keyword) {
+                contentHtml = highlightText(contentHtml, keyword);
+            }
+            
+            contentArea.innerHTML = contentHtml;
+            renderIcons();
+            
+            // 내용 변경 후 스크롤 및 검색 네비게이터 제어
+            if (keyword) {
+                highlights = Array.from(document.querySelectorAll('.search-highlight'));
+                if (highlights.length > 0) {
+                    currentHighlightIndex = 0;
+                    document.getElementById('searchNavigator').classList.remove('hidden');
+                    updateHighlightUI();
+                } else {
+                    document.getElementById('searchNavigator').classList.add('hidden');
+                    document.querySelector('main').scrollTo(0, 0);
+                }
+            } else {
+                document.getElementById('searchNavigator').classList.add('hidden');
+                document.querySelector('main').scrollTo(0, 0);
+            }
+        }
+
+        // 검색 네비게이터 UI 업데이트 및 스크롤 이동 함수
+        function updateHighlightUI() {
+            if (highlights.length === 0) return;
+            
+            // 모든 하이라이트에서 활성화 클래스 제거
+            highlights.forEach(el => el.classList.remove('active'));
+            
+            // 현재 인덱스 하이라이트에 활성화 클래스 추가
+            const activeEl = highlights[currentHighlightIndex];
+            activeEl.classList.add('active');
+            
+            // 카운터 텍스트 업데이트
+            document.getElementById('searchMatchCount').innerText = (currentHighlightIndex + 1) + " / " + highlights.length;
+            
+            // 해당 위치로 부드럽게 스크롤
+            activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // 다음 검색 결과로 이동
+        function nextHighlight() {
+            if (highlights.length === 0) return;
+            currentHighlightIndex = (currentHighlightIndex + 1) % highlights.length;
+            updateHighlightUI();
+        }
+
+        // 이전 검색 결과로 이동
+        function prevHighlight() {
+            if (highlights.length === 0) return;
+            currentHighlightIndex = (currentHighlightIndex - 1 + highlights.length) % highlights.length;
+            updateHighlightUI();
+        }
+
+        // 검색 취소 및 초기화
+        function clearSearch() {
+            document.getElementById('desktopSearch').value = '';
+            document.getElementById('mobileSearch').value = '';
+            document.getElementById('searchNavigator').classList.add('hidden');
+            
+            renderMenu(manualData);
+            
+            // 초기 안내 화면으로 복귀
+            contentArea.innerHTML = `
+                <div class="text-center py-20 text-slate-500">
+                    <i data-lucide="pointer" class="w-16 h-16 mx-auto mb-4 text-slate-300"></i>
+                    <p class="text-2xl font-bold mb-2">왼쪽 메뉴에서 매뉴얼을 선택해주세요.</p>
+                    <p class="text-lg">또는 상단 검색창에서 기기 이름을 검색해 보세요.</p>
+                </div>
+            `;
+            renderIcons();
+            
+            // 활성화된 메뉴 선택 해제
+            document.querySelectorAll('#menuList button').forEach(b => {
+                b.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-200');
+                const icon = b.querySelector('svg, i');
+                if (icon) {
+                    icon.classList.remove('text-blue-600');
+                    icon.classList.add('text-slate-400');
+                }
+            });
+        }
+
+        // 검색 처리 함수
+        function handleSearch(e) {
+            const rawKeyword = e.target.value;
+            const keywordLower = rawKeyword.trim().toLowerCase();
+            
+            // 모바일/데스크탑 검색창 동기화
+            desktopSearch.value = rawKeyword;
+            mobileSearch.value = rawKeyword;
+
+            const filteredData = manualData.filter(item => {
+                return item.title.toLowerCase().includes(keywordLower) || 
+                       item.content.toLowerCase().includes(keywordLower);
+            });
+
+            // 필터링된 데이터와 원본 검색어를 넘겨줌
+            renderMenu(filteredData, rawKeyword.trim());
+
+            // 검색 결과가 있으면 첫 번째 항목 자동 선택, 검색어가 비어있으면 초기 화면 유지
+            if (keywordLower !== '' && filteredData.length > 0) {
+                // 버튼 강제 클릭 이벤트 유발하여 화면 표시 (자동 스크롤 발동)
+                menuList.querySelector('button').click();
+            } else if (keywordLower === '') {
+                clearSearch(); // 검색어가 비워지면 clearSearch() 호출하여 깨끗하게 초기화
+            }
+        }
+
+        // --- 기능: 폰트 확대/축소 ---
+        let currentFontScale = 1;
+        function changeFontSize(change) {
+            currentFontScale += change;
+            // 최소 0.8, 최대 1.6 제한
+            if (currentFontScale < 0.8) currentFontScale = 0.8;
+            if (currentFontScale > 1.6) currentFontScale = 1.6;
+            
+            // CSS 변수 적용
+            document.documentElement.style.setProperty('--font-scale', currentFontScale);
+            
+            // 화면에 배율 표시 (예: 1.2 -> 120%)
+            fontScaleDisplay.innerText = Math.round(currentFontScale * 100) + '%';
+        }
+
+        // --- 기능: 사이드바 토글 ---
+        function toggleSidebar() {
+            sidebar.classList.toggle('sidebar-hidden');
+            
+            const sidebarText = document.getElementById('sidebarText');
+            const sidebarIcon = document.getElementById('sidebarIcon');
+            const mobileSidebarToggleBtn = document.getElementById('mobileSidebarToggleBtn');
+
+            if (sidebar.classList.contains('sidebar-hidden')) {
+                // 사이드바가 숨겨졌을 때 텍스트/아이콘 변경
+                sidebarText.innerText = "목차표시";
+                sidebarIcon.setAttribute("data-lucide", "panel-left-open");
+                mobileSidebarToggleBtn.innerText = "목차표시";
+            } else {
+                // 사이드바가 보일 때 텍스트/아이콘 변경
+                sidebarText.innerText = "목차숨김";
+                sidebarIcon.setAttribute("data-lucide", "panel-left-close");
+                mobileSidebarToggleBtn.innerText = "목차숨김";
+            }
+            renderIcons();
+        }
+
+        // --- 기능: 전체화면 전환 ---
+        function toggleFullScreen() {
+            const elem = document.documentElement;
+            const btn = document.getElementById('fullscreenToggleBtn');
+            const fullscreenText = document.getElementById('fullscreenText');
+            const fullscreenIcon = document.getElementById('fullscreenIcon');
+
+            if (!document.fullscreenElement) {
+                // 전체화면 진입
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE11 */
+                    elem.msRequestFullscreen();
+                }
+                fullscreenIcon.setAttribute("data-lucide", "minimize");
+                fullscreenText.innerText = "창화면";
+                btn.title = "창화면";
+            } else {
+                // 전체화면 종료
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+                fullscreenIcon.setAttribute("data-lucide", "maximize");
+                fullscreenText.innerText = "전체화면";
+                btn.title = "전체화면 전환";
+            }
+            renderIcons();
+        }
+
+        // 이벤트 리스너 등록
+        desktopSearch.addEventListener('input', handleSearch);
+        mobileSearch.addEventListener('input', handleSearch);
+
+        // 초기 화면 설정
+        renderMenu(manualData);
+        renderIcons();
+
+    </script>
+</body>
+</html>
