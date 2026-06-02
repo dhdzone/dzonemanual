@@ -4,146 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>디지털 체험존 기기 매뉴얼</title>
-    <!-- Tailwind CSS (스타일링용) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons (아이콘용) -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         
         /* 기본 변수 설정 */
         :root {
-            --font-scale: 1; /* 폰트 확대/축소 배율 (기본 1) */
+            --font-scale: 1;
         }
         
         body {
             font-family: 'Pretendard', sans-serif;
             -webkit-font-smoothing: antialiased;
-            /* 폰트 스케일 변수 적용 */
             font-size: calc(1rem * var(--font-scale));
         }
         
-        /* 스크롤바 디자인 (어르신들이 보기 편하게 약간 두껍게) */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
+        /* 스크롤바 디자인 */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .content-box ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; }
+        .content-box li { margin-bottom: 0.5rem; }
+        
+        /* 규격화된 제목 스타일 */
+        .content-box h2 { font-size: calc(1.5rem * var(--font-scale)); font-weight: bold; color: #1e3a8a; margin-top: 1.5rem; margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .content-box h3 { font-size: calc(1.25rem * var(--font-scale)); font-weight: 600; color: #334155; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .content-box h4 { font-size: calc(1.125rem * var(--font-scale)); font-weight: 600; color: #475569; margin-top: 0.75rem; margin-bottom: 0.25rem; }
+        .content-box p, .content-box li, .content-box strong, .content-box span { font-size: calc(1rem * var(--font-scale)); color: #475569; }
+        
+        .content-box .text-sm, .content-box .text-xs, .content-box .text-base, .content-box .text-lg, .content-box .text-xl {
+            font-size: inherit; 
         }
         
-        .content-box ul {
-            list-style-type: disc;
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
-        }
-        .content-box li {
-            margin-bottom: 0.5rem;
-        }
+        .highlight { background-color: #fef08a; padding: 0 4px; border-radius: 4px; }
         
-        /* 규격화된 제목 스타일 (rem 단위 사용, var(--font-scale)의 영향을 받음) */
-        .content-box h2 { /* 대제목 (기기명) */
-            font-size: calc(1.5rem * var(--font-scale)); 
-            font-weight: bold;
-            color: #1e3a8a;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 0.5rem;
-        }
-        .content-box h3 { /* 중제목 (섹션명) */
-            font-size: calc(1.25rem * var(--font-scale));
-            font-weight: 600;
-            color: #334155;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .content-box h4 { /* 소제목 (항목명) */
-            font-size: calc(1.125rem * var(--font-scale));
-            font-weight: 600;
-            color: #475569;
-            margin-top: 0.75rem;
-            margin-bottom: 0.25rem;
-        }
-        .content-box p, .content-box li, .content-box strong, .content-box span { /* 본문 설명 */
-            font-size: calc(1rem * var(--font-scale));
-            color: #475569;
-        }
-        
-        /* 특정 작은 텍스트 클래스 무력화 및 스케일 적용 */
-        .content-box .text-sm, 
-        .content-box .text-xs,
-        .content-box .text-base,
-        .content-box .text-lg,
-        .content-box .text-xl {
-            font-size: inherit; /* 부모(혹은 전역) 폰트 크기 상속받아 통일 */
-        }
-        
-        .highlight {
-            background-color: #fef08a; /* 노란색 형광펜 효과 */
-            padding: 0 4px;
-            border-radius: 4px;
-        }
+        .search-highlight { transition: all 0.3s ease; }
+        .search-highlight.active { background-color: #f97316 !important; color: white !important; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.4) !important; border-radius: 4px; }
 
-        /* 활성화된 검색어 하이라이트 스타일 */
-        .search-highlight {
-            transition: all 0.3s ease;
-        }
-        .search-highlight.active {
-            background-color: #f97316 !important; /* 오렌지색 */
-            color: white !important;
-            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.4) !important;
-            border-radius: 4px;
-        }
-
-        /* 사이드바 숨김을 위한 클래스 */
-        .sidebar-hidden {
-            display: none !important;
-        }
+        /* 사이드바 숨김을 위한 클래스 (부드러운 애니메이션 적용) */
+        .sidebar-hidden { display: none !important; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden transition-all duration-300" id="appBody">
 
-    <!-- 모바일 헤더 & 검색 (화면 작을 때 위쪽에 표시) -->
-    <header class="md:hidden bg-blue-700 text-white p-4 shadow-md z-10 flex flex-col gap-3 shrink-0">
+    <header class="md:hidden bg-blue-700 text-white p-4 shadow-md z-30 flex flex-col gap-3 shrink-0 sticky top-0">
         <div class="flex justify-between items-center">
             <h1 class="text-xl font-bold flex items-center">
                 <i data-lucide="book-open" class="mr-2"></i> 디지털 체험존
             </h1>
             <div class="flex gap-2">
-                <button onclick="toggleSidebar()" class="p-2 bg-blue-600 rounded hover:bg-blue-500 flex items-center text-sm font-semibold" aria-label="목차 토글" id="mobileSidebarToggleBtn">
+                <button onclick="toggleSidebar()" class="p-2 bg-blue-600 rounded hover:bg-blue-500 flex items-center text-sm font-semibold transition-colors" aria-label="목차 토글" id="mobileSidebarToggleBtn">
                     목차숨김
                 </button>
-                <!-- 모바일 폰트 조절 버튼 -->
-                <button onclick="changeFontSize(-0.1)" class="p-2 bg-blue-600 rounded hover:bg-blue-500" aria-label="글씨 작게">
+                <button onclick="changeFontSize(-0.1)" class="p-2 bg-blue-600 rounded hover:bg-blue-500 transition-colors" aria-label="글씨 작게">
                     <i data-lucide="minus" class="w-5 h-5"></i>
                 </button>
-                <button onclick="changeFontSize(0.1)" class="p-2 bg-blue-600 rounded hover:bg-blue-500" aria-label="글씨 크게">
+                <button onclick="changeFontSize(0.1)" class="p-2 bg-blue-600 rounded hover:bg-blue-500 transition-colors" aria-label="글씨 크게">
                     <i data-lucide="plus" class="w-5 h-5"></i>
                 </button>
             </div>
         </div>
         <div class="relative">
             <input type="text" id="mobileSearch" placeholder="기기명이나 내용을 검색하세요..." 
-                class="w-full p-3 pl-10 rounded-lg text-slate-800 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
-            <i data-lucide="search" class="absolute left-3 top-3.5 text-slate-400"></i>
+                class="w-full p-2.5 pl-10 rounded-lg text-slate-800 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-inner">
+            <i data-lucide="search" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
         </div>
     </header>
 
-    <!-- 사이드바 (메뉴) -->
-    <aside id="sidebar" class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col h-[30vh] md:h-full z-10 shrink-0 transition-all duration-300 relative">
-        <!-- 데스크탑 헤더 & 검색 -->
+    <aside id="sidebar" class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col h-[40vh] md:h-full z-20 shrink-0 transition-all duration-300 relative shadow-md md:shadow-none">
         <div class="hidden md:block p-5 bg-blue-700 text-white">
             <div class="flex justify-between items-start mb-4">
                 <h1 class="text-2xl font-bold flex items-center">
-                    <i data-lucide="book-open" class="mr-2"></i> 디지털 체험존 매뉴얼
+                    <i data-lucide="book-open" class="mr-2"></i> 매뉴얼
                 </h1>
             </div>
             <div class="relative">
@@ -152,69 +87,45 @@
                 <i data-lucide="search" class="absolute left-3 top-3.5 text-slate-400"></i>
             </div>
         </div>
-        
-        <!-- 메뉴 리스트 -->
         <div class="flex-1 overflow-y-auto p-2" id="menuList">
-            <!-- 자바스크립트로 메뉴가 생성됩니다 -->
-        </div>
+            </div>
     </aside>
 
-    <!-- 메인 컨텐츠 영역 -->
-    <main class="flex-1 overflow-y-auto bg-slate-50 relative flex flex-col transition-all duration-300">
+    <main class="flex-1 overflow-y-auto bg-slate-50 relative flex flex-col transition-all duration-300 scroll-smooth" id="mainContent">
         
-        <!-- 데스크탑 화면제어 툴바 (스크롤 시 상단 고정) -->
-        <div class="sticky top-0 z-20 bg-slate-50/90 backdrop-blur border-b border-slate-200 px-4 py-3 md:px-8 hidden md:flex justify-end items-center gap-3 w-full">
-            
-            <!-- 목차 숨김/표시 텍스트 버튼 -->
+        <div class="sticky top-0 z-20 bg-slate-50/90 backdrop-blur border-b border-slate-200 px-4 py-3 md:px-8 hidden md:flex justify-end items-center gap-3 w-full shadow-sm">
             <button onclick="toggleSidebar()" id="sidebarToggleBtnDesktop" class="bg-white text-slate-600 px-4 py-2 rounded shadow-sm border border-slate-200 hover:bg-slate-100 flex items-center font-bold text-sm transition-colors" title="목차 닫기/열기">
                 <i data-lucide="panel-left-close" class="w-4 h-4 mr-1.5" id="sidebarIcon"></i>
                 <span id="sidebarText">목차숨김</span>
             </button>
-
-            <!-- 데스크탑 폰트 조절 버튼 -->
             <div class="flex bg-white rounded shadow-sm border border-slate-200 overflow-hidden">
-                <button onclick="changeFontSize(-0.1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 border-r border-slate-200 transition-colors" title="글씨 작게">
-                    <i data-lucide="minus" class="w-4 h-4"></i>
-                </button>
-                <div class="px-3 py-2 text-slate-600 font-semibold flex items-center justify-center bg-slate-50 min-w-[3.5rem] text-sm" id="fontScaleDisplay">
-                    100%
-                </div>
-                <button onclick="changeFontSize(0.1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 border-l border-slate-200 transition-colors" title="글씨 크게">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                </button>
+                <button onclick="changeFontSize(-0.1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 border-r border-slate-200 transition-colors" title="글씨 작게"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                <div class="px-3 py-2 text-slate-600 font-semibold flex items-center justify-center bg-slate-50 min-w-[3.5rem] text-sm" id="fontScaleDisplay">100%</div>
+                <button onclick="changeFontSize(0.1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 border-l border-slate-200 transition-colors" title="글씨 크게"><i data-lucide="plus" class="w-4 h-4"></i></button>
             </div>
-            
-            <!-- 전체화면/창화면 텍스트 버튼 -->
             <button onclick="toggleFullScreen()" id="fullscreenToggleBtn" class="bg-white text-slate-600 px-4 py-2 rounded shadow-sm border border-slate-200 hover:bg-slate-100 flex items-center font-bold text-sm transition-colors" title="전체화면 전환">
                 <i data-lucide="maximize" class="w-4 h-4 mr-1.5" id="fullscreenIcon"></i>
                 <span id="fullscreenText">전체화면</span>
             </button>
         </div>
 
-        <div class="p-4 md:p-8 flex-1 w-full">
-            <div id="contentArea" class="max-w-4xl w-full mx-auto bg-white rounded-2xl shadow-sm p-6 md:p-10 border border-slate-200 content-box leading-relaxed relative">
-                <!-- 초기 화면 -->
-            <div class="text-center py-20 text-slate-500">
-                <i data-lucide="pointer" class="w-16 h-16 mx-auto mb-4 text-slate-300"></i>
-                <p class="text-2xl font-bold mb-2">왼쪽 메뉴에서 매뉴얼을 선택해주세요.</p>
-                <p class="text-lg">또는 위쪽 검색창에서 기기 이름을 검색해 보세요.</p>
+        <div class="p-3 md:p-8 flex-1 w-full">
+            <div id="contentArea" class="max-w-4xl w-full mx-auto bg-white rounded-2xl shadow-sm p-4 md:p-10 border border-slate-200 content-box leading-relaxed relative">
+                <div class="text-center py-16 md:py-20 text-slate-500">
+                    <i data-lucide="pointer" class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 text-slate-300"></i>
+                    <p class="text-xl md:text-2xl font-bold mb-2">목차에서 매뉴얼을 선택해주세요.</p>
+                    <p class="text-base md:text-lg">또는 검색창에서 기기 이름을 검색해 보세요.</p>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- 검색 네비게이터 (플로팅 바) -->
     <div id="searchNavigator" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-sm shadow-xl border border-blue-200 rounded-full flex items-center px-4 py-2 gap-3 z-50 hidden transition-all duration-300">
-        <button onclick="prevHighlight()" class="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400" title="이전 결과">
-            <i data-lucide="chevron-up" class="w-5 h-5"></i>
-        </button>
+        <button onclick="prevHighlight()" class="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400" title="이전 결과"><i data-lucide="chevron-up" class="w-5 h-5"></i></button>
         <span id="searchMatchCount" class="text-slate-700 font-semibold text-sm whitespace-nowrap min-w-[3rem] text-center">0 / 0</span>
-        <button onclick="nextHighlight()" class="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400" title="다음 결과">
-            <i data-lucide="chevron-down" class="w-5 h-5"></i>
-        </button>
+        <button onclick="nextHighlight()" class="p-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400" title="다음 결과"><i data-lucide="chevron-down" class="w-5 h-5"></i></button>
         <div class="w-px h-5 bg-slate-300 mx-1"></div>
-        <button onclick="clearSearch()" class="p-2 text-rose-500 hover:bg-rose-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-rose-400" title="검색 취소">
-            <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+        <button onclick="clearSearch()" class="p-2 text-rose-500 hover:bg-rose-50 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-rose-400" title="검색 취소"><i data-lucide="x" class="w-5 h-5"></i></button>
     </div>
 
     <script>
@@ -1808,45 +1719,34 @@
             }
         ];
 
-        const menuList = document.getElementById('menuList');
+const menuList = document.getElementById('menuList');
         const contentArea = document.getElementById('contentArea');
         const desktopSearch = document.getElementById('desktopSearch');
         const mobileSearch = document.getElementById('mobileSearch');
         const sidebar = document.getElementById('sidebar');
-        const sidebarToggleBtnOuter = document.getElementById('sidebarToggleBtnOuter');
-        const sidebarToggleBtnDesktop = document.getElementById('sidebarToggleBtnDesktop');
         const fontScaleDisplay = document.getElementById('fontScaleDisplay');
+        const mainContent = document.getElementById('mainContent');
 
-        // 아이콘 렌더링 함수 초기화 용도
-        function renderIcons() {
-            lucide.createIcons();
-        }
+        function renderIcons() { lucide.createIcons(); }
 
-        // 검색 네비게이터용 전역 변수
         let highlights = [];
         let currentHighlightIndex = -1;
 
-        // 검색어 하이라이트 처리를 위한 도우미 함수 (HTML 태그 내부 속성 보호)
         function highlightText(html, keyword) {
             if (!keyword.trim()) return html;
-            // 정규식 특수문자 이스케이프
             const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            // HTML 태그(<...>) 내부가 아닌 텍스트만 매칭
             const regex = new RegExp("(?![^<]*>)(" + escapedKeyword + ")", "gi");
-            // 검색어를 <mark> 태그로 감싸 시각적 강조
             return html.replace(regex, "<mark class='search-highlight bg-yellow-300 text-slate-900 px-1 rounded shadow-sm'>$1</mark>");
         }
 
-        // 메뉴 렌더링 함수 (검색어 파라미터 추가)
         function renderMenu(dataToRender, keyword = '') {
-            menuList.innerHTML = ''; // 메뉴 비우기
+            menuList.innerHTML = ''; 
             
             if (dataToRender.length === 0) {
-                menuList.innerHTML = '<p class="text-center text-slate-500 mt-10">검색 결과가 없습니다.</p>';
+                menuList.innerHTML = '<p class="text-center text-slate-500 mt-10 text-sm md:text-base">검색 결과가 없습니다.</p>';
                 return;
             }
 
-            // '기기 세팅 방법', '기기 정리 방법'이 항상 위에 오도록 정렬
             const sortedData = dataToRender.sort((a, b) => {
                 if (a.id === 'setup') return -1;
                 if (b.id === 'setup') return 1;
@@ -1857,16 +1757,14 @@
 
             sortedData.forEach(item => {
                 const btn = document.createElement('button');
-                btn.className = 'w-full text-left p-4 mb-2 rounded-xl flex items-center font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-transparent hover:border-blue-100';
+                btn.className = 'w-full text-left p-3 md:p-4 mb-2 rounded-xl flex items-center font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-transparent hover:border-blue-100';
                 btn.innerHTML = `
-                    <i data-lucide="${item.icon}" class="w-6 h-6 mr-3 text-slate-400"></i> 
-                    <span class="text-lg">${item.title}</span>
+                    <i data-lucide="${item.icon}" class="w-5 h-5 md:w-6 md:h-6 mr-3 text-slate-400 shrink-0"></i> 
+                    <span class="text-base md:text-lg truncate">${item.title}</span>
                 `;
                 btn.onclick = () => {
-                    // 활성화 스타일 적용
                     document.querySelectorAll('#menuList button').forEach(b => {
                         b.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-200');
-                        // Lucide가 i 태그를 svg로 렌더링하므로, 둘 다 잡을 수 있게 수정
                         const icon = b.querySelector('svg, i');
                         if (icon) {
                             icon.classList.remove('text-blue-600');
@@ -1881,25 +1779,25 @@
                     }
                     
                     showContent(item, keyword);
+
+                    // [개선] 모바일/태블릿 화면(너비 768px 미만)일 경우, 메뉴 선택 후 목차 자동 숨김 처리
+                    if (window.innerWidth < 768) {
+                        if (!sidebar.classList.contains('sidebar-hidden')) {
+                            toggleSidebar();
+                        }
+                    }
                 };
                 menuList.appendChild(btn);
             });
             renderIcons();
         }
 
-        // 본문 내용 보여주는 함수 (검색어 하이라이트 및 자동 스크롤 적용)
         function showContent(item, keyword = '') {
             let contentHtml = item.content;
-            
-            // 검색어가 있을 경우 본문 내 텍스트 하이라이트 적용
-            if (keyword) {
-                contentHtml = highlightText(contentHtml, keyword);
-            }
-            
+            if (keyword) contentHtml = highlightText(contentHtml, keyword);
             contentArea.innerHTML = contentHtml;
             renderIcons();
             
-            // 내용 변경 후 스크롤 및 검색 네비게이터 제어
             if (keyword) {
                 highlights = Array.from(document.querySelectorAll('.search-highlight'));
                 if (highlights.length > 0) {
@@ -1908,65 +1806,52 @@
                     updateHighlightUI();
                 } else {
                     document.getElementById('searchNavigator').classList.add('hidden');
-                    document.querySelector('main').scrollTo(0, 0);
+                    // [개선] 콘텐츠 로드 시 본문 맨 위로 부드럽게 자동 스크롤
+                    mainContent.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             } else {
                 document.getElementById('searchNavigator').classList.add('hidden');
-                document.querySelector('main').scrollTo(0, 0);
+                // [개선] 콘텐츠 로드 시 본문 맨 위로 부드럽게 자동 스크롤
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
-        // 검색 네비게이터 UI 업데이트 및 스크롤 이동 함수
         function updateHighlightUI() {
             if (highlights.length === 0) return;
-            
-            // 모든 하이라이트에서 활성화 클래스 제거
             highlights.forEach(el => el.classList.remove('active'));
-            
-            // 현재 인덱스 하이라이트에 활성화 클래스 추가
             const activeEl = highlights[currentHighlightIndex];
             activeEl.classList.add('active');
-            
-            // 카운터 텍스트 업데이트
             document.getElementById('searchMatchCount').innerText = (currentHighlightIndex + 1) + " / " + highlights.length;
-            
-            // 해당 위치로 부드럽게 스크롤
             activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        // 다음 검색 결과로 이동
         function nextHighlight() {
             if (highlights.length === 0) return;
             currentHighlightIndex = (currentHighlightIndex + 1) % highlights.length;
             updateHighlightUI();
         }
 
-        // 이전 검색 결과로 이동
         function prevHighlight() {
             if (highlights.length === 0) return;
             currentHighlightIndex = (currentHighlightIndex - 1 + highlights.length) % highlights.length;
             updateHighlightUI();
         }
 
-        // 검색 취소 및 초기화
         function clearSearch() {
             document.getElementById('desktopSearch').value = '';
             document.getElementById('mobileSearch').value = '';
             document.getElementById('searchNavigator').classList.add('hidden');
-            
             renderMenu(manualData);
             
-            // 초기 안내 화면으로 복귀
             contentArea.innerHTML = `
-                <div class="text-center py-20 text-slate-500">
-                    <i data-lucide="pointer" class="w-16 h-16 mx-auto mb-4 text-slate-300"></i>
-                    <p class="text-2xl font-bold mb-2">왼쪽 메뉴에서 매뉴얼을 선택해주세요.</p>
-                    <p class="text-lg">또는 상단 검색창에서 기기 이름을 검색해 보세요.</p>
+                <div class="text-center py-16 md:py-20 text-slate-500">
+                    <i data-lucide="pointer" class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-4 text-slate-300"></i>
+                    <p class="text-xl md:text-2xl font-bold mb-2">목차에서 매뉴얼을 선택해주세요.</p>
+                    <p class="text-base md:text-lg">또는 검색창에서 기기 이름을 검색해 보세요.</p>
                 </div>
             `;
             renderIcons();
             
-            // 활성화된 메뉴 선택 해제
             document.querySelectorAll('#menuList button').forEach(b => {
                 b.classList.remove('bg-blue-100', 'text-blue-800', 'border-blue-200');
                 const icon = b.querySelector('svg, i');
@@ -1975,14 +1860,17 @@
                     icon.classList.add('text-slate-400');
                 }
             });
+
+            // 검색 취소 시 모바일에서는 목차를 다시 열어주어 빠른 탐색 유도
+            if (window.innerWidth < 768 && sidebar.classList.contains('sidebar-hidden')) {
+                toggleSidebar();
+            }
         }
 
-        // 검색 처리 함수
         function handleSearch(e) {
             const rawKeyword = e.target.value;
             const keywordLower = rawKeyword.trim().toLowerCase();
             
-            // 모바일/데스크탑 검색창 동기화
             desktopSearch.value = rawKeyword;
             mobileSearch.value = rawKeyword;
 
@@ -1991,34 +1879,24 @@
                        item.content.toLowerCase().includes(keywordLower);
             });
 
-            // 필터링된 데이터와 원본 검색어를 넘겨줌
             renderMenu(filteredData, rawKeyword.trim());
 
-            // 검색 결과가 있으면 첫 번째 항목 자동 선택, 검색어가 비어있으면 초기 화면 유지
             if (keywordLower !== '' && filteredData.length > 0) {
-                // 버튼 강제 클릭 이벤트 유발하여 화면 표시 (자동 스크롤 발동)
                 menuList.querySelector('button').click();
             } else if (keywordLower === '') {
-                clearSearch(); // 검색어가 비워지면 clearSearch() 호출하여 깨끗하게 초기화
+                clearSearch();
             }
         }
 
-        // --- 기능: 폰트 확대/축소 ---
         let currentFontScale = 1;
         function changeFontSize(change) {
             currentFontScale += change;
-            // 최소 0.8, 최대 1.6 제한
             if (currentFontScale < 0.8) currentFontScale = 0.8;
             if (currentFontScale > 1.6) currentFontScale = 1.6;
-            
-            // CSS 변수 적용
             document.documentElement.style.setProperty('--font-scale', currentFontScale);
-            
-            // 화면에 배율 표시 (예: 1.2 -> 120%)
             fontScaleDisplay.innerText = Math.round(currentFontScale * 100) + '%';
         }
 
-        // --- 기능: 사이드바 토글 ---
         function toggleSidebar() {
             sidebar.classList.toggle('sidebar-hidden');
             
@@ -2027,12 +1905,10 @@
             const mobileSidebarToggleBtn = document.getElementById('mobileSidebarToggleBtn');
 
             if (sidebar.classList.contains('sidebar-hidden')) {
-                // 사이드바가 숨겨졌을 때 텍스트/아이콘 변경
                 sidebarText.innerText = "목차표시";
                 sidebarIcon.setAttribute("data-lucide", "panel-left-open");
                 mobileSidebarToggleBtn.innerText = "목차표시";
             } else {
-                // 사이드바가 보일 때 텍스트/아이콘 변경
                 sidebarText.innerText = "목차숨김";
                 sidebarIcon.setAttribute("data-lucide", "panel-left-close");
                 mobileSidebarToggleBtn.innerText = "목차숨김";
@@ -2040,7 +1916,6 @@
             renderIcons();
         }
 
-        // --- 기능: 전체화면 전환 ---
         function toggleFullScreen() {
             const elem = document.documentElement;
             const btn = document.getElementById('fullscreenToggleBtn');
@@ -2048,26 +1923,12 @@
             const fullscreenIcon = document.getElementById('fullscreenIcon');
 
             if (!document.fullscreenElement) {
-                // 전체화면 진입
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.webkitRequestFullscreen) { /* Safari */
-                    elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) { /* IE11 */
-                    elem.msRequestFullscreen();
-                }
+                if (elem.requestFullscreen) { elem.requestFullscreen(); }
                 fullscreenIcon.setAttribute("data-lucide", "minimize");
                 fullscreenText.innerText = "창화면";
                 btn.title = "창화면";
             } else {
-                // 전체화면 종료
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { /* Safari */
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { /* IE11 */
-                    document.msExitFullscreen();
-                }
+                if (document.exitFullscreen) { document.exitFullscreen(); }
                 fullscreenIcon.setAttribute("data-lucide", "maximize");
                 fullscreenText.innerText = "전체화면";
                 btn.title = "전체화면 전환";
@@ -2075,11 +1936,9 @@
             renderIcons();
         }
 
-        // 이벤트 리스너 등록
         desktopSearch.addEventListener('input', handleSearch);
         mobileSearch.addEventListener('input', handleSearch);
 
-        // 초기 화면 설정
         renderMenu(manualData);
         renderIcons();
 
