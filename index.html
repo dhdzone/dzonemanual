@@ -103,10 +103,11 @@
                 <div class="px-3 py-2 text-slate-600 font-semibold flex items-center justify-center bg-slate-50 min-w-[3.5rem] text-sm" id="fontScaleDisplay">100%</div>
                 <button onclick="changeFontSize(0.1)" class="px-3 py-2 text-slate-600 hover:bg-slate-100 border-l border-slate-200 transition-colors" title="글씨 크게"><i data-lucide="plus" class="w-4 h-4"></i></button>
             </div>
-            <button onclick="toggleFullScreen()" id="fullscreenToggleBtn" class="bg-white text-slate-600 px-4 py-2 rounded shadow-sm border border-slate-200 hover:bg-slate-100 flex items-center font-bold text-sm transition-colors" title="전체화면 전환">
-                <i data-lucide="maximize" class="w-4 h-4 mr-1.5" id="fullscreenIcon"></i>
-                <span id="fullscreenText">전체화면</span>
-            </button>
+            <!-- 돌아가기 버튼 (파란색) -->
+            <a href="https://dhdzonelog.vercel.app/" id="goBackBtn" class="bg-blue-600 text-white px-4 py-2 rounded shadow-sm hover:bg-blue-700 flex items-center font-bold text-sm transition-colors" title="돌아가기">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1.5"></i>
+                <span>돌아가기</span>
+            </a>
         </div>
 
         <div class="p-3 md:p-8 flex-1 w-full">
@@ -879,7 +880,7 @@
                             <div class="bg-slate-50 p-4 rounded border border-slate-100">
                                 <strong class="text-slate-800 block mb-2">▶ 조작 예제:</strong>
                                 <ul class="list-disc ml-5 text-slate-700 space-y-2">
-                                    <li><strong>최초 개통 및 대리 가입:</strong> 사용자가 스마트폰이 없는 경우, 보호자나 복지사가 대신 스마트폰(안드로이드 7.0 이상 권장) 구글 플레이스토어에서 '두리케어챗봇' 앱을 설치하고 회원가입을 대신 진행해 연결합니다.</li>
+                                    <li><strong>최초 개통 및 대리 가입:</strong> 사용자가 스마트폰이 없는 경우, 보호자나 복지사가 대신 스마트폰(안드로이드 7.0 이상 권장) 구글 플레이스토어에서 '두리케어챗봇 앱을 설치하고 회원가입을 대신 진행해 연결합니다.</li>
                                     <li><strong>원격 알람 및 메시지 설정:</strong> 가족앱이나 관리자앱을 사용자앱에 연동해 두면, 보호자가 사용자의 알람 시간을 원격으로 대신 설정하거나 음성메시지, 중요 일정 등을 입력하여 로봇을 통해 전달할 수 있습니다.</li>
                                     <li><strong>주의사항:</strong> 앱 설정 메뉴에서 기기 검색 후 Wi-Fi만 다이렉트로 연결(가족/관리자앱 단독 개통)하는 경우, 미디어 재생과 날씨 대화는 가능하지만 원격 알람, 긴급알림, 음성메시지 기능 등은 제한됩니다. 또한, 스마트폰 계정 1개당 로봇 1대만 등록이 가능합니다.</li>
                                 </ul>
@@ -1049,7 +1050,7 @@
                                     <li><strong>(취침기상) 시간 동안 취침모드 켜기:</strong> 설정된 수면 시간대 동안 로봇 화면이 깜깜하게 유지되도록 조절합니다.</li>
                                     <li><strong>화면에 로봇 발화를 글자로 표시:</strong> 귀가 어두우신 어르신을 위해 로봇이 하는 말을 자막처럼 화면에 텍스트로 표출해 줍니다.</li>
                                     <li><strong>메시지 수신 확인 질문 허용:</strong> 보호자나 관리자가 보낸 공지/메시지를 로봇이 읽어준 후, 잘 확인했는지 사용자에게 재차 질문하는 기능입니다.</li>
-                                    <li><strong>사용자 정보 페이지 QR코드:</strong> 스마트폰으로 화면의 QR을 스캔하면 관리 페이지에 접속되며, 로그인 후 호칭, 기상/취침/식사/약 복용 시간 등을 손쉽게 업데이트할 수 있습니다.</li>
+                                    <li><strong>사용자 정보 페이지 QR코드:</strong> 스마트폰으로 화면의 QR 스캔하면 관리 페이지에 접속되며, 로그인 후 호칭, 기상/취침/식사/약 복용 시간 등을 손쉽게 업데이트할 수 있습니다.</li>
                                 </ul>
                             </div>
                         </div>
@@ -1287,7 +1288,7 @@
                             <p class="text-slate-600 mb-4"><strong>설명:</strong> 화면에 주어지는 시각적 사물 개수나 숫자를 활용한 가로형 연산식(덧셈, 뺄셈)의 문제를 풀고, 정답에 해당하는 수의 블록을 누르거나 직접 기호와 숫자 블록을 조합해 수식을 완성하는 수학 연산 훈련입니다. (자극 영역: 전두엽/계산력)</p>
                             <div class="bg-slate-50 p-4 rounded border border-slate-100">
                                 <strong class="text-slate-800 block mb-2">▶ 진행 예제: (1~7단계는 정답 블록 터치, 8~10단계는 수식 직접 조립 방식)</strong>
-                                <p class="text-slate-700">로봇 화면에 사물 아이콘 연산식(예: [파란색 사각형 8개] + [노란색 별 7개] = ?) 형태의 시각적 수학 문제가 제시됩니다. 어르신은 8 더하기 7을 머릿속으로 계산하여 정답이 '15'임을 도출합니다. 정렬된 블록 도구들 중 화면에 숫자 '15'가 표출되고 있는 실제 블록을 찾아 손가락으로 꾹 눌러 정답을 입력한 뒤 [정답 확인]을 터치합니다.</p>
+                                <p class="text-slate-700">로봇 화면에 사물 아이콘 연산식(예: [파란색 사각형 8개] + [노란색 별 7개] = ?) 형태의 시각적 수학 문제가 제시됩니다. 어르신은 8 더하기 7을 머릿속으로 계산하여 정답이 '15'임을 도출합니다. 정렬된 블록 도구들 중 화면에 숫자 '15'가 표출되고 있는 실제 블록을 찾아 손가락으로 꾹 눌러 정답 입력한 뒤 [정답 확인]을 터치합니다.</p>
                             </div>
                         </div>
 
@@ -1335,7 +1336,7 @@
                         <ul class="space-y-3 text-slate-700 bg-blue-50 p-6 rounded-lg border border-blue-100">
                             <li><strong class="text-blue-800">정의:</strong> 어르신들의 스마트한 노후생활을 돕고 100세를 준비할 수 있도록 지원하는 놀이형 멀티미디어 학습시스템입니다.</li>
                             <li><strong class="text-blue-800">목적:</strong> 시니어 사용자의 자존감 회복, 효과적인 여가활동 지원, 그리고 자기주도적 삶 형성을 목적으로 합니다.</li>
-                            <li><strong class="text-blue-800">하드웨어 특징:</strong> 49인치 대화면과 4K(3840×2160) 고해상도 디스플레이 스크린을 탑재하고 있으며, 사용자의 위치에 따라 화면을 180도 전환하여 편리하게 터치식으로 사용할 수 있습니다.</li>
+                            <li><strong class="text-blue-800">하드웨어 특징:</strong> 49인치 대화면과 4K(3840×2160) 고해상도 디스플레이 스크린을 탑재하고 있으며, 사용자의 위치에 따라 화면을 180도 전환하여 편리하게 터치식 사용할 수 있습니다.</li>
                         </ul>
                     </div>
 
@@ -1760,7 +1761,7 @@
             }
         ];
 
-const menuList = document.getElementById('menuList');
+        const menuList = document.getElementById('menuList');
         const contentArea = document.getElementById('contentArea');
         const desktopSearch = document.getElementById('desktopSearch');
         const mobileSearch = document.getElementById('mobileSearch');
@@ -1821,7 +1822,7 @@ const menuList = document.getElementById('menuList');
                     
                     showContent(item, keyword);
 
-                    // [개선] 모바일/태블릿 화면(너비 768px 미만)일 경우, 메뉴 선택 후 목차 자동 숨김 처리
+                    // 모바일/태블릿 화면일 경우, 메뉴 선택 후 목차 자동 숨김 처리
                     if (window.innerWidth < 768) {
                         if (!sidebar.classList.contains('sidebar-hidden')) {
                             toggleSidebar();
@@ -1847,12 +1848,10 @@ const menuList = document.getElementById('menuList');
                     updateHighlightUI();
                 } else {
                     document.getElementById('searchNavigator').classList.add('hidden');
-                    // [개선] 콘텐츠 로드 시 본문 맨 위로 부드럽게 자동 스크롤
                     mainContent.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             } else {
                 document.getElementById('searchNavigator').classList.add('hidden');
-                // [개선] 콘텐츠 로드 시 본문 맨 위로 부드럽게 자동 스크롤
                 mainContent.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
@@ -1902,7 +1901,6 @@ const menuList = document.getElementById('menuList');
                 }
             });
 
-            // 검색 취소 시 모바일에서는 목차를 다시 열어주어 빠른 탐색 유도
             if (window.innerWidth < 768 && sidebar.classList.contains('sidebar-hidden')) {
                 toggleSidebar();
             }
@@ -1953,26 +1951,6 @@ const menuList = document.getElementById('menuList');
                 sidebarText.innerText = "목차숨김";
                 sidebarIcon.setAttribute("data-lucide", "panel-left-close");
                 mobileSidebarToggleBtn.innerText = "목차숨김";
-            }
-            renderIcons();
-        }
-
-        function toggleFullScreen() {
-            const elem = document.documentElement;
-            const btn = document.getElementById('fullscreenToggleBtn');
-            const fullscreenText = document.getElementById('fullscreenText');
-            const fullscreenIcon = document.getElementById('fullscreenIcon');
-
-            if (!document.fullscreenElement) {
-                if (elem.requestFullscreen) { elem.requestFullscreen(); }
-                fullscreenIcon.setAttribute("data-lucide", "minimize");
-                fullscreenText.innerText = "창화면";
-                btn.title = "창화면";
-            } else {
-                if (document.exitFullscreen) { document.exitFullscreen(); }
-                fullscreenIcon.setAttribute("data-lucide", "maximize");
-                fullscreenText.innerText = "전체화면";
-                btn.title = "전체화면 전환";
             }
             renderIcons();
         }
